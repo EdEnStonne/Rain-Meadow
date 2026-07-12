@@ -1,8 +1,10 @@
 using HarmonyLib;
 using Menu;
+using Menu.Remix.MixedUI;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using On.RWCustom;
 using RainMeadow.UI;
 using System;
 using System.Collections.Generic;
@@ -57,7 +59,178 @@ namespace RainMeadow
             On.MoreSlugcats.BackgroundOptionsMenu.PopulateButtons += BackgroundOptionsMenu_PopulateButtons;
 
             new Hook(typeof(MoreSlugcats.BackgroundOptionsMenu).GetProperty(nameof(MoreSlugcats.BackgroundOptionsMenu.NonRegionButtons)).GetGetMethod(), BackgroundOptionsMenu_NonRegionButtons);
+
+            On.InGameTranslator.LoadFonts += InGameTranslator_LoadFonts_LoadAllFont;
+            On.InGameTranslator.UnloadFonts += InGameTranslator_UnloadFonts_UnloadAllFont;
+            On.RWCustom.Custom.GetFont += Custom_GetFont_GetUniversalFont;
+            On.RWCustom.Custom.GetDisplayFont += Custom_GetDisplayFont_GetUniversalFont;
         }
+
+        public const string universalacr = "uni";
+        public const string universalFontName = "font" + universalacr;
+        public const string universalDisplayFontName = "DisplayFont" + universalacr;
+        private string Custom_GetFont_GetUniversalFont(Custom.orig_GetFont orig)
+        {
+            return RainMeadow.rainMeadowOptions.LoadAllLanguages.Value && Futile.atlasManager.DoesContainFontWithName(universalFontName) ? universalFontName : orig();
+        }
+        private string Custom_GetDisplayFont_GetUniversalFont(Custom.orig_GetDisplayFont orig)
+        {
+            return RainMeadow.rainMeadowOptions.LoadAllLanguages.Value && Futile.atlasManager.DoesContainFontWithName(universalDisplayFontName) ? universalDisplayFontName : orig();
+        }
+        
+        private void InitUniversalFont()
+        {
+            if (!Futile.atlasManager.DoesContainAtlas("Atlases/fontAtlas"))
+            {
+                Futile.atlasManager.LoadAtlas("Atlases/fontAtlas");
+            }
+
+            if (Futile.atlasManager._allElementsByName.ContainsKey("ps4Glyphs"))
+            {
+                Futile.atlasManager._allElementsByName.Add("ps4Glyphs" + universalacr, Futile.atlasManager._allElementsByName["ps4Glyphs"]);
+                Futile.atlasManager._allElementsByName["ps4Glyphs"].name = "ps4Glyphs" + universalacr;
+                Futile.atlasManager._allElementsByName.Remove("ps4Glyphs");
+            }
+            if (Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
+            {
+                Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + universalacr, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
+                Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + universalacr;
+                Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
+            }
+            RainMeadow.Debug("Changed font altas el (ps4Glyphs, ps4GlyphsAtlas) name of " + universalacr);
+
+            Futile.atlasManager.LoadFont(universalFontName, "font", "Atlases/font", 0f, 0f);
+            Futile.atlasManager.CombineFonts(universalFontName, "ps4Glyphs" + universalacr, "ps4Glyphs" + universalacr, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); 
+            
+            Futile.atlasManager.LoadFont(universalDisplayFontName, "DisplayFont", "Atlases/DisplayFont", 0f, 0f);
+        }
+        private void LoadUniversalFontInOtherLanguague(InGameTranslator.LanguageID lang) // From InGameTranslator.LoadFonts
+        {
+            try
+            {
+                if (lang == InGameTranslator.LanguageID.TraditionalChinese) return;
+                string accronym = LocalizationTranslator.LangShort(lang);
+
+                if (lang == InGameTranslator.LanguageID.Japanese 
+                    || lang == InGameTranslator.LanguageID.Korean 
+                    || lang == InGameTranslator.LanguageID.Chinese)
+                {
+                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/fontAtlas" + accronym))
+                    {
+                        Futile.atlasManager.LoadAtlas("Atlases/fontAtlas" + accronym);
+                        if (Futile.atlasManager._allElementsByName.ContainsKey("fontSolo"))
+                        {
+                            Futile.atlasManager._allElementsByName.Add("fontSolo" + accronym, Futile.atlasManager._allElementsByName["fontSolo"]);
+                            Futile.atlasManager._allElementsByName["fontSolo"].name = "fontSolo" + accronym;
+                            Futile.atlasManager._allElementsByName.Remove("fontSolo");
+                        }
+                        if (Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
+                        {
+                            Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + accronym, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
+                            Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + accronym;
+                            Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
+                        }
+                        RainMeadow.Debug("Changed font altas el (fontSolo, ps4GlyphsAtlas) name of " + lang);
+                    }
+                    Futile.atlasManager.CombineFonts(universalFontName, "font" + accronym, "font" + accronym, "Atlases/font" + accronym, -1f, new FTextParams(), 0.5f); // -1, 0.5
+                    Futile.atlasManager.CombineFonts(universalFontName, "fontSolo" + accronym, "fontSolo" + accronym, "Atlases/font", -1f, new FTextParams(), 1f); // -1, 1
+                    Futile.atlasManager.CombineFonts(universalFontName, "ps4GlyphsAtlas" + accronym, "ps4GlyphsAtlas" + accronym, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); // 0, 0.5
+
+                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/displayFontAtlas" + accronym))
+                    {
+                        Futile.atlasManager.LoadAtlas("Atlases/displayFontAtlas" + accronym);
+                        if (Futile.atlasManager._allElementsByName.ContainsKey("DisplayFontSolo"))
+                        {
+                            Futile.atlasManager._allElementsByName.Add("DisplayFontSolo" + accronym, Futile.atlasManager._allElementsByName["DisplayFontSolo"]);
+                            Futile.atlasManager._allElementsByName["DisplayFontSolo"].name = "DisplayFontSolo" + accronym;
+                            Futile.atlasManager._allElementsByName.Remove("DisplayFontSolo");
+                        }
+                        RainMeadow.Debug("Changed font altas el (DisplayFontSolo) name of " + lang);
+                    }
+
+                    Futile.atlasManager.CombineFonts(universalDisplayFontName, "DisplayFont" + accronym, "DisplayFont" + accronym, "Atlases/DisplayFont" + accronym, -4f, new FTextParams(), 0.5f); // -4, 0.5
+                    Futile.atlasManager.CombineFonts(universalDisplayFontName, "DisplayFontSolo" + accronym, "DisplayFontSolo" + accronym, "Atlases/DisplayFont", -4f, new FTextParams(), 1f); // -4, 1
+                }
+                else if (lang == InGameTranslator.LanguageID.Russian || lang == InGameTranslator.LanguageID.Thai)
+                {
+                    bool loadNewAltas = false;
+                    
+                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/fontAtlas" + accronym))
+                    {
+                        Futile.atlasManager.LoadAtlas("Atlases/fontAtlas" + accronym);
+                        loadNewAltas = true;
+                    }
+                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/displayFontAtlas" + accronym) 
+                        && (lang == InGameTranslator.LanguageID.Russian || lang == InGameTranslator.LanguageID.Thai))
+                    {
+                        Futile.atlasManager.LoadAtlas("Atlases/displayFontAtlas" + accronym);
+                        loadNewAltas = true;
+                    }
+
+                    if (loadNewAltas)
+                    {
+                        if (accronym != "" && Futile.atlasManager._allElementsByName.ContainsKey("ps4Glyphs"))
+                        {
+                            Futile.atlasManager._allElementsByName.Add("ps4Glyphs" + accronym, Futile.atlasManager._allElementsByName["ps4Glyphs"]);
+                            Futile.atlasManager._allElementsByName["ps4Glyphs"].name = "ps4Glyphs" + accronym;
+                            Futile.atlasManager._allElementsByName.Remove("ps4Glyphs");
+                        }
+                        if (accronym != "" && Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
+                        {
+                            Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + accronym, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
+                            Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + accronym;
+                            Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
+                        }
+                        RainMeadow.Debug("Changed font altas el (ps4Glyphs, ps4GlyphsAtlas) name of " + lang);
+                    }
+
+                    Futile.atlasManager.CombineFonts(universalFontName, "font" + accronym, "font" + accronym, "Atlases/font" + accronym, 0f, new FTextParams(), 1f); // 0, 1
+                    Futile.atlasManager.CombineFonts(universalFontName, "ps4GlyphsAtlas" + accronym, "ps4GlyphsAtlas" + accronym, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); // 0, 0.5
+                    
+                    Futile.atlasManager.CombineFonts(universalDisplayFontName, "DisplayFont" + accronym, "DisplayFont" + accronym, "Atlases/DisplayFont" + accronym, 0f, new FTextParams(), 1f); // 0, 1
+                }
+                RainMeadow.Debug($"Loaded font of {lang}");
+            }
+            catch (System.Exception ex)
+            {
+                RainMeadow.Error($"Error while trying to load font {lang} : {ex}");
+            }
+        }
+        private void InGameTranslator_LoadFonts_LoadAllFont(On.InGameTranslator.orig_LoadFonts orig, InGameTranslator.LanguageID lang, Menu.Menu menu)
+        {
+            if (RainMeadow.rainMeadowOptions.LoadAllLanguages.Value)
+            {
+                // Load all languages
+                RainMeadow.Debug($"Loading all language into one font, orig {lang}");
+                InitUniversalFont();
+                FFont font = Futile.atlasManager.GetFontWithName(universalFontName);
+                RainMeadow.Debug($"Step 0 ! Font had {font._charInfosByID.Count} characters :");
+                for (int i = 0; i < InGameTranslator.LanguageID.values.entries.Count; i++)
+                {
+                    LoadUniversalFontInOtherLanguague(InGameTranslator.LanguageID.Parse(i));
+                    font = Futile.atlasManager.GetFontWithName(universalFontName);
+                    RainMeadow.Debug($"Step {i + 1} ! Font had {font._charInfosByID.Count} characters :");
+                }
+                // LoadUniversalFontInOtherLanguague(InGameTranslator.LanguageID.Japanese);
+                if (menu != null)
+                {
+                    LabelTest.Initialize(menu);
+                }
+                font = Futile.atlasManager.GetFontWithName(universalFontName);
+                RainMeadow.Debug($"Done ! Font had {font._charInfosByID.Count} characters :");
+            }
+            else
+            {
+                orig(lang, menu);
+            }
+        }
+        private void InGameTranslator_UnloadFonts_UnloadAllFont(On.InGameTranslator.orig_UnloadFonts orig, InGameTranslator.LanguageID lang)
+        {
+            orig(lang);
+            Futile.atlasManager.UnloadFont(universalFontName);
+            Futile.atlasManager.UnloadFont(universalDisplayFontName);
+        }
+
 
         public void BackgroundOptionsMenu_PopulateButtons(On.MoreSlugcats.BackgroundOptionsMenu.orig_PopulateButtons orig, MoreSlugcats.BackgroundOptionsMenu self)
         {

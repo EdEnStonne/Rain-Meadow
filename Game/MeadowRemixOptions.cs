@@ -114,9 +114,8 @@ public class RainMeadowOptions : OptionInterface
     public readonly Configurable<bool> GlobalMute;
 
     public readonly Configurable<int> ArenaFlairActive;
-
+    
     public readonly Configurable<bool> EnableMeadowCosmetics;
-
 
     // DROWN
     public readonly Configurable<int> DrownMaxCreatureCount;
@@ -132,7 +131,6 @@ public class RainMeadowOptions : OptionInterface
     public readonly Configurable<int> DrownPointsForRock;
     public readonly Configurable<KeyCode> DrownStoreKey;
 
-
     public readonly Configurable<KeyCode> StoreItem1;
     public readonly Configurable<KeyCode> StoreItem2;
     public readonly Configurable<KeyCode> StoreItem3;
@@ -141,6 +139,9 @@ public class RainMeadowOptions : OptionInterface
     public readonly Configurable<KeyCode> StoreItem6;
     public readonly Configurable<KeyCode> StoreItem7;
     public readonly Configurable<KeyCode> StoreItem8;
+
+    public readonly Configurable<bool> LoadAllLanguages;
+
 
     public enum IntroRoll
     {
@@ -279,6 +280,8 @@ public class RainMeadowOptions : OptionInterface
         ChallengeDenEjection = config.Bind("ChallengeDenEjection", true);
         GlobalMute = config.Bind("GlobalMute", false);
         ArenaFlairActive = config.Bind("ArenaFlairActive", 0);
+        LoadAllLanguages = config.Bind("LoadAllLanguage", false);
+        
         EnableMeadowCosmetics = config.Bind("EnableMeadowCosmetics", true);
 
         //DROWN
@@ -296,7 +299,6 @@ public class RainMeadowOptions : OptionInterface
         DrownPointsForRock = config.Bind("PointsForRock", 0);
         DrownStoreKey = config.Bind("DrownStoreKey", KeyCode.B);
 
-
         StoreItem1 = config.Bind("DrownStoreItem1", KeyCode.Alpha1);
         StoreItem2 = config.Bind("DrownStoreItem2", KeyCode.Alpha2);
         StoreItem3 = config.Bind("DrownStoreItem3", KeyCode.Alpha3);
@@ -306,6 +308,12 @@ public class RainMeadowOptions : OptionInterface
         StoreItem7 = config.Bind("DrownStoreItem7", KeyCode.Alpha7);
         StoreItem8 = config.Bind("DrownStoreItem8", KeyCode.Alpha8);
     }
+    List<ListItem> capeList = new List<ListItem>
+{
+    new ListItem(Menu.MenuColorEffect.ColorToHex(Color.red), "Default"),
+    new ListItem(Menu.MenuColorEffect.ColorToHex(new Color(0.863f, 0.918f, 0.941f)), "Silver"),
+    new ListItem(Menu.MenuColorEffect.ColorToHex(RainWorld.SaturatedGold.SafeColorRange()), "Gold")
+};
 
     List<ListItem> arenaFlairList = new List<ListItem>
 {
@@ -367,6 +375,9 @@ public class RainMeadowOptions : OptionInterface
 
             new OpLabel(10, 250f, Translate("Streamer Mode")),
             new OpComboBox2(StreamerMode, new Vector2(10f, 220f), 160f, OpResourceSelector.GetEnumNames(null, typeof(StreamMode)).Select(li => { li.displayName = Translate(li.displayName); return li; }).ToList()) { colorEdge = Menu.MenuColorEffect.rgbWhite },
+            
+            new OpLabel(210, 250f, Translate("Load All Language Font")),
+            new OpCheckBox(LoadAllLanguages, new Vector2(210, 220f)){description = Translate("Load all language in a single font, allowing you to see more non-latin characters (needs restart)")},
 
             new OpLabel(10, 180f, Translate("Chat Log Toggle")),
             new OpKeyBinder(ChatLogKey, new Vector2(10f, 150), new Vector2(150f, 30f)),
