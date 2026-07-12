@@ -178,6 +178,7 @@ namespace RainMeadow
 
                 MachineConnector.SetRegisteredOI("henpemaz_rainmeadow", rainMeadowOptions);
                 rainMeadowOptions._LoadConfigFile(); // We need the logging settings
+                rainMeadowOptions.OnStartAndLoad();
 
                 if (AdvancedProfilingEnabled())
                 {

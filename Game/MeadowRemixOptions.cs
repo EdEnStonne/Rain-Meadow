@@ -141,6 +141,7 @@ public class RainMeadowOptions : OptionInterface
     public readonly Configurable<KeyCode> StoreItem8;
 
     public readonly Configurable<bool> LoadAllLanguages;
+    public bool LoadAllLanguagesRestartValue;
 
 
     public enum IntroRoll
@@ -168,7 +169,10 @@ public class RainMeadowOptions : OptionInterface
     private UIelement[] OnlineAdvancedSettings;
     private UIelement[] OnlineGameplay;
 
-
+    public void OnStartAndLoad()
+    {
+        LoadAllLanguagesRestartValue = LoadAllLanguages.Value;
+    }
 
     public RainMeadowOptions(global::RainMeadow.RainMeadow instance)
     {
@@ -280,6 +284,7 @@ public class RainMeadowOptions : OptionInterface
         ChallengeDenEjection = config.Bind("ChallengeDenEjection", true);
         GlobalMute = config.Bind("GlobalMute", false);
         ArenaFlairActive = config.Bind("ArenaFlairActive", 0);
+        
         LoadAllLanguages = config.Bind("LoadAllLanguage", false);
         
         EnableMeadowCosmetics = config.Bind("EnableMeadowCosmetics", true);

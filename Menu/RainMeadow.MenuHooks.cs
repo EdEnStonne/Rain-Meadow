@@ -66,16 +66,16 @@ namespace RainMeadow
             On.RWCustom.Custom.GetDisplayFont += Custom_GetDisplayFont_GetUniversalFont;
         }
 
-        public const string universalacr = "uni";
-        public const string universalFontName = "font" + universalacr;
-        public const string universalDisplayFontName = "DisplayFont" + universalacr;
+        public const string universalaccronym = "uni";
+        public const string universalFontName = "font" + universalaccronym;
+        public const string universalDisplayFontName = "DisplayFont" + universalaccronym;
         private string Custom_GetFont_GetUniversalFont(Custom.orig_GetFont orig)
         {
-            return RainMeadow.rainMeadowOptions.LoadAllLanguages.Value && Futile.atlasManager.DoesContainFontWithName(universalFontName) ? universalFontName : orig();
+            return RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue && Futile.atlasManager.DoesContainFontWithName(universalFontName) ? universalFontName : orig();
         }
         private string Custom_GetDisplayFont_GetUniversalFont(Custom.orig_GetDisplayFont orig)
         {
-            return RainMeadow.rainMeadowOptions.LoadAllLanguages.Value && Futile.atlasManager.DoesContainFontWithName(universalDisplayFontName) ? universalDisplayFontName : orig();
+            return RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue && Futile.atlasManager.DoesContainFontWithName(universalDisplayFontName) ? universalDisplayFontName : orig();
         }
         
         private void InitUniversalFont()
@@ -87,24 +87,24 @@ namespace RainMeadow
 
             if (Futile.atlasManager._allElementsByName.ContainsKey("ps4Glyphs"))
             {
-                Futile.atlasManager._allElementsByName.Add("ps4Glyphs" + universalacr, Futile.atlasManager._allElementsByName["ps4Glyphs"]);
-                Futile.atlasManager._allElementsByName["ps4Glyphs"].name = "ps4Glyphs" + universalacr;
+                Futile.atlasManager._allElementsByName.Add("ps4Glyphs" + universalaccronym, Futile.atlasManager._allElementsByName["ps4Glyphs"]);
+                Futile.atlasManager._allElementsByName["ps4Glyphs"].name = "ps4Glyphs" + universalaccronym;
                 Futile.atlasManager._allElementsByName.Remove("ps4Glyphs");
             }
             if (Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
             {
-                Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + universalacr, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
-                Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + universalacr;
+                Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + universalaccronym, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
+                Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + universalaccronym;
                 Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
             }
-            RainMeadow.Debug("Changed font altas el (ps4Glyphs, ps4GlyphsAtlas) name of " + universalacr);
+            RainMeadow.Debug("Changed font altas el (ps4Glyphs, ps4GlyphsAtlas) name of " + universalaccronym);
 
             Futile.atlasManager.LoadFont(universalFontName, "font", "Atlases/font", 0f, 0f);
-            Futile.atlasManager.CombineFonts(universalFontName, "ps4Glyphs" + universalacr, "ps4Glyphs" + universalacr, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); 
+            Futile.atlasManager.CombineFonts(universalFontName, "ps4Glyphs" + universalaccronym, "ps4Glyphs" + universalaccronym, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); 
             
             Futile.atlasManager.LoadFont(universalDisplayFontName, "DisplayFont", "Atlases/DisplayFont", 0f, 0f);
         }
-        private void LoadUniversalFontInOtherLanguague(InGameTranslator.LanguageID lang) // From InGameTranslator.LoadFonts
+        private void LoadOtherLanguagueInUniversalFont(InGameTranslator.LanguageID lang) // From InGameTranslator.LoadFonts
         {
             try
             {
@@ -198,7 +198,7 @@ namespace RainMeadow
         }
         private void InGameTranslator_LoadFonts_LoadAllFont(On.InGameTranslator.orig_LoadFonts orig, InGameTranslator.LanguageID lang, Menu.Menu menu)
         {
-            if (RainMeadow.rainMeadowOptions.LoadAllLanguages.Value)
+            if (RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue)
             {
                 // Load all languages
                 RainMeadow.Debug($"Loading all language into one font, orig {lang}");
@@ -207,11 +207,11 @@ namespace RainMeadow
                 RainMeadow.Debug($"Step 0 ! Font had {font._charInfosByID.Count} characters :");
                 for (int i = 0; i < InGameTranslator.LanguageID.values.entries.Count; i++)
                 {
-                    LoadUniversalFontInOtherLanguague(InGameTranslator.LanguageID.Parse(i));
+                    LoadOtherLanguagueInUniversalFont(InGameTranslator.LanguageID.Parse(i));
                     font = Futile.atlasManager.GetFontWithName(universalFontName);
                     RainMeadow.Debug($"Step {i + 1} ! Font had {font._charInfosByID.Count} characters :");
                 }
-                // LoadUniversalFontInOtherLanguague(InGameTranslator.LanguageID.Japanese);
+                LoadOtherLanguagueInUniversalFont(InGameTranslator.LanguageID.Russian);
                 if (menu != null)
                 {
                     LabelTest.Initialize(menu);
