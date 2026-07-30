@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace RainMeadow
 {
@@ -64,160 +65,62 @@ namespace RainMeadow
             On.InGameTranslator.UnloadFonts += InGameTranslator_UnloadFonts_UnloadAllFont;
             On.RWCustom.Custom.GetFont += Custom_GetFont_GetUniversalFont;
             On.RWCustom.Custom.GetDisplayFont += Custom_GetDisplayFont_GetUniversalFont;
+            
+            
+            // For multi-language support testing. Shows labels in main menu
+            //On.Menu.MainMenu.ctor += Menu_MainMenu_ctor_LanguageTesting;
+
         }
 
-        public const string universalaccronym = "uni";
-        public const string universalFontName = "font" + universalaccronym;
-        public const string universalDisplayFontName = "DisplayFont" + universalaccronym;
+
+        private const string mergedFontName = "fontUni";
+        private const string mergedDisplayFontName = "DisplayFontUni";
         private string Custom_GetFont_GetUniversalFont(Custom.orig_GetFont orig)
         {
-            return RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue && Futile.atlasManager.DoesContainFontWithName(universalFontName) ? universalFontName : orig();
+            return RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue && Futile.atlasManager.DoesContainFontWithName(mergedFontName) ? mergedFontName : orig();
         }
         private string Custom_GetDisplayFont_GetUniversalFont(Custom.orig_GetDisplayFont orig)
         {
-            return RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue && Futile.atlasManager.DoesContainFontWithName(universalDisplayFontName) ? universalDisplayFontName : orig();
+            return RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue && Futile.atlasManager.DoesContainFontWithName(mergedDisplayFontName) ? mergedDisplayFontName : orig();
         }
-        
-        private void InitUniversalFont()
-        {
-            if (!Futile.atlasManager.DoesContainAtlas("Atlases/fontAtlas"))
-            {
-                Futile.atlasManager.LoadAtlas("Atlases/fontAtlas");
-            }
 
-            if (Futile.atlasManager._allElementsByName.ContainsKey("ps4Glyphs"))
-            {
-                Futile.atlasManager._allElementsByName.Add("ps4Glyphs" + universalaccronym, Futile.atlasManager._allElementsByName["ps4Glyphs"]);
-                Futile.atlasManager._allElementsByName["ps4Glyphs"].name = "ps4Glyphs" + universalaccronym;
-                Futile.atlasManager._allElementsByName.Remove("ps4Glyphs");
-            }
-            if (Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
-            {
-                Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + universalaccronym, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
-                Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + universalaccronym;
-                Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
-            }
-            RainMeadow.Debug("Changed font altas el (ps4Glyphs, ps4GlyphsAtlas) name of " + universalaccronym);
 
-            Futile.atlasManager.LoadFont(universalFontName, "font", "Atlases/font", 0f, 0f);
-            Futile.atlasManager.CombineFonts(universalFontName, "ps4Glyphs" + universalaccronym, "ps4Glyphs" + universalaccronym, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); 
-            
-            Futile.atlasManager.LoadFont(universalDisplayFontName, "DisplayFont", "Atlases/DisplayFont", 0f, 0f);
-        }
-        private void LoadOtherLanguagueInUniversalFont(InGameTranslator.LanguageID lang) // From InGameTranslator.LoadFonts
-        {
-            try
-            {
-                if (lang == InGameTranslator.LanguageID.TraditionalChinese) return;
-                string accronym = LocalizationTranslator.LangShort(lang);
-
-                if (lang == InGameTranslator.LanguageID.Japanese 
-                    || lang == InGameTranslator.LanguageID.Korean 
-                    || lang == InGameTranslator.LanguageID.Chinese)
-                {
-                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/fontAtlas" + accronym))
-                    {
-                        Futile.atlasManager.LoadAtlas("Atlases/fontAtlas" + accronym);
-                        if (Futile.atlasManager._allElementsByName.ContainsKey("fontSolo"))
-                        {
-                            Futile.atlasManager._allElementsByName.Add("fontSolo" + accronym, Futile.atlasManager._allElementsByName["fontSolo"]);
-                            Futile.atlasManager._allElementsByName["fontSolo"].name = "fontSolo" + accronym;
-                            Futile.atlasManager._allElementsByName.Remove("fontSolo");
-                        }
-                        if (Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
-                        {
-                            Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + accronym, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
-                            Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + accronym;
-                            Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
-                        }
-                        RainMeadow.Debug("Changed font altas el (fontSolo, ps4GlyphsAtlas) name of " + lang);
-                    }
-                    Futile.atlasManager.CombineFonts(universalFontName, "font" + accronym, "font" + accronym, "Atlases/font" + accronym, -1f, new FTextParams(), 0.5f); // -1, 0.5
-                    Futile.atlasManager.CombineFonts(universalFontName, "fontSolo" + accronym, "fontSolo" + accronym, "Atlases/font", -1f, new FTextParams(), 1f); // -1, 1
-                    Futile.atlasManager.CombineFonts(universalFontName, "ps4GlyphsAtlas" + accronym, "ps4GlyphsAtlas" + accronym, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); // 0, 0.5
-
-                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/displayFontAtlas" + accronym))
-                    {
-                        Futile.atlasManager.LoadAtlas("Atlases/displayFontAtlas" + accronym);
-                        if (Futile.atlasManager._allElementsByName.ContainsKey("DisplayFontSolo"))
-                        {
-                            Futile.atlasManager._allElementsByName.Add("DisplayFontSolo" + accronym, Futile.atlasManager._allElementsByName["DisplayFontSolo"]);
-                            Futile.atlasManager._allElementsByName["DisplayFontSolo"].name = "DisplayFontSolo" + accronym;
-                            Futile.atlasManager._allElementsByName.Remove("DisplayFontSolo");
-                        }
-                        RainMeadow.Debug("Changed font altas el (DisplayFontSolo) name of " + lang);
-                    }
-
-                    Futile.atlasManager.CombineFonts(universalDisplayFontName, "DisplayFont" + accronym, "DisplayFont" + accronym, "Atlases/DisplayFont" + accronym, -4f, new FTextParams(), 0.5f); // -4, 0.5
-                    Futile.atlasManager.CombineFonts(universalDisplayFontName, "DisplayFontSolo" + accronym, "DisplayFontSolo" + accronym, "Atlases/DisplayFont", -4f, new FTextParams(), 1f); // -4, 1
-                }
-                else if (lang == InGameTranslator.LanguageID.Russian || lang == InGameTranslator.LanguageID.Thai)
-                {
-                    bool loadNewAltas = false;
-                    
-                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/fontAtlas" + accronym))
-                    {
-                        Futile.atlasManager.LoadAtlas("Atlases/fontAtlas" + accronym);
-                        loadNewAltas = true;
-                    }
-                    if (!Futile.atlasManager.DoesContainAtlas("Atlases/displayFontAtlas" + accronym) 
-                        && (lang == InGameTranslator.LanguageID.Russian || lang == InGameTranslator.LanguageID.Thai))
-                    {
-                        Futile.atlasManager.LoadAtlas("Atlases/displayFontAtlas" + accronym);
-                        loadNewAltas = true;
-                    }
-
-                    if (loadNewAltas)
-                    {
-                        if (accronym != "" && Futile.atlasManager._allElementsByName.ContainsKey("ps4Glyphs"))
-                        {
-                            Futile.atlasManager._allElementsByName.Add("ps4Glyphs" + accronym, Futile.atlasManager._allElementsByName["ps4Glyphs"]);
-                            Futile.atlasManager._allElementsByName["ps4Glyphs"].name = "ps4Glyphs" + accronym;
-                            Futile.atlasManager._allElementsByName.Remove("ps4Glyphs");
-                        }
-                        if (accronym != "" && Futile.atlasManager._allElementsByName.ContainsKey("ps4GlyphsAtlas"))
-                        {
-                            Futile.atlasManager._allElementsByName.Add("ps4GlyphsAtlas" + accronym, Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"]);
-                            Futile.atlasManager._allElementsByName["ps4GlyphsAtlas"].name = "ps4GlyphsAtlas" + accronym;
-                            Futile.atlasManager._allElementsByName.Remove("ps4GlyphsAtlas");
-                        }
-                        RainMeadow.Debug("Changed font altas el (ps4Glyphs, ps4GlyphsAtlas) name of " + lang);
-                    }
-
-                    Futile.atlasManager.CombineFonts(universalFontName, "font" + accronym, "font" + accronym, "Atlases/font" + accronym, 0f, new FTextParams(), 1f); // 0, 1
-                    Futile.atlasManager.CombineFonts(universalFontName, "ps4GlyphsAtlas" + accronym, "ps4GlyphsAtlas" + accronym, "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f); // 0, 0.5
-                    
-                    Futile.atlasManager.CombineFonts(universalDisplayFontName, "DisplayFont" + accronym, "DisplayFont" + accronym, "Atlases/DisplayFont" + accronym, 0f, new FTextParams(), 1f); // 0, 1
-                }
-                RainMeadow.Debug($"Loaded font of {lang}");
-            }
-            catch (System.Exception ex)
-            {
-                RainMeadow.Error($"Error while trying to load font {lang} : {ex}");
-            }
-        }
         private void InGameTranslator_LoadFonts_LoadAllFont(On.InGameTranslator.orig_LoadFonts orig, InGameTranslator.LanguageID lang, Menu.Menu menu)
         {
             if (RainMeadow.rainMeadowOptions.LoadAllLanguagesRestartValue)
             {
-                // Load all languages
-                RainMeadow.Debug($"Loading all language into one font, orig {lang}");
-                InitUniversalFont();
-                FFont font = Futile.atlasManager.GetFontWithName(universalFontName);
-                RainMeadow.Debug($"Step 0 ! Font had {font._charInfosByID.Count} characters :");
-                for (int i = 0; i < InGameTranslator.LanguageID.values.entries.Count; i++)
+                RainMeadow.Debug("Initializing merged font...");
+                
+                // those pics are so         FAT
+                if (!Futile.atlasManager.DoesContainAtlas("fontFull"))
+                    Futile.atlasManager.LoadAtlas("atlases/fontFull");
+                if (!Futile.atlasManager.DoesContainAtlas("displayFontFull"))
+                    Futile.atlasManager.LoadAtlas("atlases/displayFontFull");
+
+
+
+                // loading chinese, japanese, korean, thai and russian fonts. all latin characters from "font" or "fontSolo" sprites are already included in russian one
+                if (!Futile.atlasManager.DoesContainFontWithName(mergedFontName))
                 {
-                    LoadOtherLanguagueInUniversalFont(InGameTranslator.LanguageID.Parse(i));
-                    font = Futile.atlasManager.GetFontWithName(universalFontName);
-                    RainMeadow.Debug($"Step {i + 1} ! Font had {font._charInfosByID.Count} characters :");
+                    Futile.atlasManager.LoadFont(mergedFontName, "fontRus", "Atlases/fontRus", 0f, 0f, new FTextParams(), 1f);
+                    Futile.atlasManager.CombineFonts(mergedFontName, "fontTha", "fontTha", "Atlases/fontTha", 0f, new FTextParams(), 1f);
+                    Futile.atlasManager.CombineFonts(mergedFontName, "fontJapFull", "fontJapFull", "Atlases/fontJapFull", -4f, new FTextParams(), 0.5f);
+                    Futile.atlasManager.CombineFonts(mergedFontName, "fontChiFull", "fontChiFull", "Atlases/fontChiFull", 0f, new FTextParams(), 0.5f);
+                    Futile.atlasManager.CombineFonts(mergedFontName, "fontKorFull", "fontKorFull", "Atlases/fontKorFull", -4f, new FTextParams(), 0.5f);
+                    Futile.atlasManager.CombineFonts(mergedFontName, "ps4GlyphsAtlas", "ps4GlyphsAtlas", "Atlases/ps4Glyphs", 0f, new FTextParams(), 0.5f);
                 }
-                LoadOtherLanguagueInUniversalFont(InGameTranslator.LanguageID.Russian);
-                if (menu != null)
+
+                if (!Futile.atlasManager.DoesContainFontWithName(mergedDisplayFontName))
                 {
-                    LabelTest.Initialize(menu);
+                    Futile.atlasManager.LoadFont(mergedDisplayFontName, "DisplayFontRus", "Atlases/DisplayFontRus", 0f, 0f, new FTextParams(), 1f);
+                    Futile.atlasManager.CombineFonts(mergedDisplayFontName, "DisplayFontTha", "DisplayFontTha", "Atlases/DisplayFontTha", 0f, new FTextParams(), 1f);
+                    Futile.atlasManager.CombineFonts(mergedDisplayFontName, "DisplayFontJapFull", "DisplayFontJapFull", "Atlases/DisplayFontJapFull", 0f, new FTextParams(), 0.5f);
+                    Futile.atlasManager.CombineFonts(mergedDisplayFontName, "DisplayFontChi", "DisplayFontChiFull", "Atlases/DisplayFontChiFull", 0f, new FTextParams(), 0.5f);
+                    Futile.atlasManager.CombineFonts(mergedDisplayFontName, "DisplayFontKorFull", "DisplayFontKorFull", "Atlases/DisplayFontKorFull", 0f, new FTextParams(), 0.5f);
                 }
-                font = Futile.atlasManager.GetFontWithName(universalFontName);
-                RainMeadow.Debug($"Done ! Font had {font._charInfosByID.Count} characters :");
+
+                RainMeadow.Debug("Merged font was initialized.");
+
             }
             else
             {
@@ -227,8 +130,8 @@ namespace RainMeadow
         private void InGameTranslator_UnloadFonts_UnloadAllFont(On.InGameTranslator.orig_UnloadFonts orig, InGameTranslator.LanguageID lang)
         {
             orig(lang);
-            Futile.atlasManager.UnloadFont(universalFontName);
-            Futile.atlasManager.UnloadFont(universalDisplayFontName);
+            Futile.atlasManager.UnloadFont(mergedFontName);
+            Futile.atlasManager.UnloadFont(mergedDisplayFontName);
         }
 
 
@@ -859,5 +762,65 @@ namespace RainMeadow
             }
             return orig(self, pageIndex);
         }
+
+        private void Menu_MainMenu_ctor_LanguageTesting(On.Menu.MainMenu.orig_ctor orig, MainMenu self,
+                ProcessManager manager, bool showRegionSpecificBkg)
+            {
+                orig(self, manager, showRegionSpecificBkg);
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "ENG: The quick brown fox jumps over the lazy dog",
+                    new Vector2(500f, 50f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "SPA: Benjamín pidió una bebida de kiwi y fresa. Noé, sin vergüenza, la más exquisita champaña del menú",
+                    new Vector2(500f, 70f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "FRE: Les naïfs ægithales hâtifs d'Aÿ pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés",
+                    new Vector2(500f, 90f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0], "ITA: Pranzo d'acqua fa volti sghembi",
+                    new Vector2(500f, 110f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "RU: Съешь ещё этих мягких французских булок, да выпей же чаю",
+                    new Vector2(500f, 130f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "THAI: นายสังฆภัณฑ์ เฮงพิทักษ์ฝั่ง ผู้เฒ่าซึ่งมีอาชีพเป็นฅนขายฃวด ถูกตำรวจปฏิบัติการจับฟ้องศาล ฐานลักนาฬิกาคุณหญิงฉัตรชฎา ฌานสมาธิ",
+                    new Vector2(500f, 150f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "JAP: 日本語の場合はランダムに生成された文章以外に、著作権が切れた小説などが利用されることもある。 ",
+                    new Vector2(500f, 170f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "CHI: 跳文經色字才品息太草夕。姊因院，呢員向寫筆細英筆門？耍水而條完道誰大地收、園師青清千，歌會年歌請學西力你天右寸布朵動麼彩田化。",
+                    new Vector2(500f, 190f), new Vector2(150f, 30f), false, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "KOR: 모든 국민은 인간다운 생활을 할 권리를 가진다. 민주평화통일자문회의의 조직·직무범위 기타 필요한 사항은 법률로 정한다.",
+                    new Vector2(500f, 210f), new Vector2(150f, 30f), false, null));
+
+
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "ENG: The quick brown fox jumps over the lazy dog",
+                    new Vector2(500f, 270f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "SPA: Benjamín pidió una bebida de kiwi y fresa. Noé, sin vergüenza, la más exquisita champaña del menú",
+                    new Vector2(500f, 300f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "FRE: Les naïfs ægithales hâtifs d'Aÿ pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés",
+                    new Vector2(500f, 330f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0], "ITA: Pranzo d'acqua fa volti sghembi",
+                    new Vector2(500f, 360f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "RU: Съешь ещё этих мягких французских булок, да выпей же чаю",
+                    new Vector2(500f, 390f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "THAI: นายสังฆภัณฑ์ เฮงพิทักษ์ฝั่ง ผู้เฒ่าซึ่งมีอาชีพเป็นฅนขายฃวด ถูกตำรวจปฏิบัติการจับฟ้องศาล ฐานลักนาฬิกาคุณหญิงฉัตรชฎา ฌานสมาธิ",
+                    new Vector2(500f, 420f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "JAP: 日本語の場合はランダムに生成された文章以外に、著作権が切れた小説などが利用されることもある。 ",
+                    new Vector2(500f, 450f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "CHI: 跳文經色字才品息太草夕。姊因院，呢員向寫筆細英筆門？耍水而條完道誰大地收、園師青清千，歌會年歌請學西力你天右寸布朵動麼彩田化。",
+                    new Vector2(500f, 480f), new Vector2(150f, 30f), true, null));
+                self.pages[0].subObjects.Add(new MenuLabel(self, self.pages[0],
+                    "KOR: 모든 국민은 인간다운 생활을 할 권리를 가진다. 민주평화통일자문회의의 조직·직무범위 기타 필요한 사항은 법률로 정한다.",
+                    new Vector2(500f, 510f), new Vector2(150f, 30f), true, null));
+            }
     }
 }
