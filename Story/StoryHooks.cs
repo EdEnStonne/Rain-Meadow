@@ -2100,11 +2100,12 @@ namespace RainMeadow
                 {
                     if (isStoryMode(out var story))
                     {
-                        var wasReadyForTransition = story.storyClientData.readyForTransition;
+                        if (story.readyForTransition >= StoryGameMode.ReadyForTransition.Opening)
+                        {
+                            story.storyClientData.readyForTransition = true;
+                            return true;
+                        }
                         story.storyClientData.readyForTransition = false;
-                        return story.readyForTransition == StoryGameMode.ReadyForTransition.Opening
-                            || (story.readyForTransition == StoryGameMode.ReadyForTransition.Crossed && wasReadyForTransition);
-
                     }
                     return false;
                 });
