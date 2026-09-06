@@ -144,6 +144,9 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
         {
             List<MenuObject> visibleElements = elements.FindAll(x => x.visible).Select(el => el.selectable).ToList();
 
+            menu.TryMutualBind(resetButton, visibleElements.FirstOrDefault(), bottomTop:true);
+            menu.TryMutualBind(visibleElements.LastOrDefault(), resetButton, bottomTop:true);
+
             if (backButton is not null)
                 visibleElements.Insert(0, backButton);
             else if (resetButton is not null)
@@ -153,9 +156,6 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
 
             if (backButton is not null && resetButton is not null)
                 menu.MutualHorizontalButtonBind(backButton, resetButton);
-
-            menu.TryMutualBind(resetButton, visibleElements.FirstOrDefault(), bottomTop:true);
-            menu.TryMutualBind(visibleElements.LastOrDefault(), resetButton, bottomTop:true);
         }
     }
 
