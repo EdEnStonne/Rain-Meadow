@@ -554,5 +554,11 @@ namespace RainMeadow
 
             return false;
         }
+
+        // TryTranslate to menu too
+        public static bool TryTranslate(this Menu.Menu menu, string text, out string trad)
+        {
+            return menu.manager.rainWorld.inGameTranslator.TryTranslate(text, out trad);
+        }
     }
 }

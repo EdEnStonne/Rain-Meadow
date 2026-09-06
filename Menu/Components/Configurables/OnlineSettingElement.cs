@@ -3,7 +3,7 @@ using Menu.Remix;
 using UnityEngine;
 using static RainMeadow.UI.Components.OnlineSlugcatAbilitiesInterface;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public abstract class OnlineSettingElement : PositionedMenuObject
 {
     public const float tabMargin = 30;

@@ -2,10 +2,9 @@ using Menu;
 using Menu.Remix;
 using UnityEngine;
 using static RainMeadow.UI.Components.OnlineSlugcatAbilitiesInterface;
-using HarmonyLib;
 using Menu.Remix.MixedUI;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public abstract class OnlineSettingTextBoxValue : OnlineSettingUIconfig
 {
     public OpTextBox textBox => (OpTextBox)uiConfig;

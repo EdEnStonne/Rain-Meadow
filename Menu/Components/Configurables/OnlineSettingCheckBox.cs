@@ -2,11 +2,10 @@ using Menu;
 using Menu.Remix;
 using UnityEngine;
 using static RainMeadow.UI.Components.OnlineSlugcatAbilitiesInterface;
-using HarmonyLib;
 using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public class OnlineSettingCheckBox : OnlineSettingUIconfig
 {
     public readonly bool defaultValue;

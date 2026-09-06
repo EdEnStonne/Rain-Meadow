@@ -4,7 +4,7 @@ using UnityEngine;
 using Menu.Remix.MixedUI;
 using RainMeadow.UI.Components.Patched;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public abstract class OnlineSettingUIconfig : OnlineSettingConfigurable
 {
     public override MenuObject selectable => uiConfig.wrapper;

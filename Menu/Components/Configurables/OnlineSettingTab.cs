@@ -3,7 +3,7 @@ using UnityEngine;
 using HarmonyLib;
 using RainMeadow.UI.Components.Base;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public readonly struct SettingsTabData
 {
     public readonly SlugcatStats.Name? slugcatIcon;

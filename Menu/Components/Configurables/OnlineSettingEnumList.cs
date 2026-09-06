@@ -4,15 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static RainMeadow.UI.Components.OnlineSlugcatAbilitiesInterface;
-using static RainMeadow.UI.Components.TabContainer;
-using static Menu.Menu;
 using System;
 using HarmonyLib;
 using Menu.Remix.MixedUI;
-using RainMeadow.UI.Components.Patched;
-using Menu.Remix.MixedUI.ValueTypes;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public class OnlineSettingEnumList : OnlineSettingUIconfig
 {
     public string valueString => comboBox.value;

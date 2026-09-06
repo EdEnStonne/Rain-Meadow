@@ -384,52 +384,10 @@ public class ArenaMainLobbyPage : PositionedMenuObject, IDynamicBindHandler
         );
     }
 
-    public void BindMSCSettingsPage(bool isHidden)
-    {
-        List<TabButton> tabButtons = tabContainer.tabButtonContainer.activeTabButtons;
-        TabButton? abilitiesTabBtn = tabButtons.Find(t => t.myTab == slugabilitiesTab);
-        MSCSettingsPage mscSettings = slugcatAbilitiesInterface!.mscSettingsTab!;
-        if (isHidden)
-        {
-            foreach (var btn in tabButtons)
-                btn.wrapper.RemoveBind(right: true);
-            mscSettings.backButton.RemoveMutualBind(leftRight: true, inverted: true);
-            return;
-        }
-        foreach (var tabBtn in tabButtons)
-            tabBtn.wrapper.TryBind(mscSettings.blockMaulCheckBox, right: true);
-        var btnToBind = abilitiesTabBtn ?? tabButtons.Last();
-        mscSettings.backButton.TryBind((abilitiesTabBtn ?? tabButtons.Last()).wrapper, left: true);
-    }
-
-    public void BindWatcherSettingsPage(bool isHidden)
-    {
-        List<TabButton> tabButtons = tabContainer.tabButtonContainer.activeTabButtons;
-        TabButton? abilitiesTabBtn = tabButtons.Find(t => t.myTab == slugabilitiesTab);
-        WatcherSettingsPage watcherSettings = slugcatAbilitiesInterface!.watcherSettingsTab!;
-        if (isHidden)
-        {
-            foreach (var tabBtn in tabButtons)
-                tabBtn.wrapper.RemoveBind(right: true);
-            watcherSettings.backButton.RemoveMutualBind(leftRight: true, inverted: true);
-            return;
-        }
-        foreach (var tabBtn in tabButtons)
-            tabBtn.wrapper.TryBind(watcherSettings.watcherCamoLimitTextBox.wrapper, right: true);
-        watcherSettings.backButton.TryBind(
-            (abilitiesTabBtn ?? tabButtons.Last()).wrapper,
-            left: true
-        );
-    }
-
     public void BindSlugcatAbilitiesSelectables(SettingsPage settingsPage, bool isHidden)
     {
         if (settingsPage == slugcatAbilitiesInterface!.selectSettings)
             BindSelectSettingsPage(isHidden);
-        if (settingsPage == slugcatAbilitiesInterface.mscSettingsTab)
-            BindMSCSettingsPage(isHidden);
-        if (settingsPage == slugcatAbilitiesInterface.watcherSettingsTab)
-            BindWatcherSettingsPage(isHidden);
     }
 
     public void SaveInterfaceOptions(bool saveOwnerOptions)

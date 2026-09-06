@@ -5,7 +5,7 @@ using static RainMeadow.UI.Components.OnlineSlugcatAbilitiesInterface;
 using HarmonyLib;
 using Menu.Remix.MixedUI;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public class OnlineSettingKeycode : OnlineSettingUIconfig
 {
     public const int tickTillNextDot = 15;

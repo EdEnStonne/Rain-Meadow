@@ -4,7 +4,7 @@ using Menu;
 using Menu.Remix;
 using UnityEngine;
 
-namespace RainMeadow.UI.Components;
+namespace RainMeadow.UI.Components.Configurables;
 public readonly struct SettingsConfigData
 {
     internal static Dictionary<Type, Func<object?>> GetAttributeOwnerDict = [];
@@ -122,10 +122,17 @@ public abstract class OnlineSettingConfigurable : OnlineSettingElement
         this.tabWrapper = tabWrapper;
         isClient = data.isClient;
 
+        // try translating with and without the ":"
+        if (!menu.TryTranslate(data.name + ":", out string trad)
+            && menu.CurrLang != InGameTranslator.LanguageID.English)
+        {
+            trad = menu.Translate(data.name) + ":";
+        }
+
         label = new(
             menu,
             this,
-            menu.Translate(data.name + ":"),
+            trad,
             Vector2.zero,
             new(textSpacing, 30),
             false
