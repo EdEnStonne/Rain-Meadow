@@ -281,9 +281,14 @@ namespace RainMeadow
         }
 
         [RPCMethod]
-        public static void AddSpinningTopEncounter(int spinningTopID)
+        public static void AddSpinningTopEncounter(uint generation, int spinningTopID)
         {
             if (!RainMeadow.isStoryMode(out var story)) return;
+            if (generation != story.campaignGeneration)
+            {
+                RainMeadow.Debug($"dropping spinning top encounter {spinningTopID} from campaign generation {generation}, current is {story.campaignGeneration}");
+                return;
+            }
             StoryHelpers.RecordSpinningTopEncounter(story, spinningTopID);
         }
 

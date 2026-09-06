@@ -455,7 +455,7 @@ namespace RainMeadow
                 StoryHelpers.RecordSpinningTopEncounter(story, spinningTopID);
                 foreach (OnlinePlayer player in OnlineManager.players)
                 {
-                    if (!player.isMe) player.InvokeOnceRPC(StoryRPCs.AddSpinningTopEncounter, spinningTopID);
+                    if (!player.isMe) player.InvokeOnceRPC(StoryRPCs.AddSpinningTopEncounter, story.campaignGeneration, spinningTopID);
                 }
             }
             else
@@ -1823,6 +1823,7 @@ namespace RainMeadow
                 var hostSaveState = new SaveState(self.currentSaveState.saveStateNumber, self);
                 hostSaveState.LoadGame(InflateJoarXML(storyGameMode.saveStateString ?? ""), game);
                 self.currentSaveState = ApplyClientSaveState(hostSaveState, self.currentSaveState);
+                storyGameMode.appliedSaveStateString = storyGameMode.saveStateString;
             }
 
             RainMeadow.Debug($"START DENPOS save:{self.currentSaveState.denPosition} last:{storyGameMode.myLastDenPos} lobby:{storyGameMode.defaultDenPos}");
