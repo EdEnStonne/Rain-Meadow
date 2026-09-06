@@ -18,14 +18,6 @@ namespace RainMeadow.UI.Components
 
         public GameSettings gameSettings;
 
-        public MenuLabel arenaImportExportLabel;
-        public MenuLabel arenaSettingsImportExportLabel;
-
-        public OpSimpleButton arenaPlaylistImportButton;
-        public OpSimpleButton arenaPlaylistExportButton;
-        public OpSimpleButton arenaSettingsExportButton;
-        public OpSimpleButton arenaSettingsImportButton;
-
         public EventfulScrollButton? prevButton,
 
 
@@ -50,162 +42,7 @@ namespace RainMeadow.UI.Components
 
             gameSettings = new GameSettings(menu, this);
 
-            InGameTranslator.LanguageID? lang = menu?.manager?.rainWorld?.inGameTranslator.currentLanguage;
-            float leftMargin = 10f;
-            float labelWidth = 140f;
-            float topOffset = size.y - 60f;
-            float rowHeight = 40f;
-            float boxMargin = leftMargin + labelWidth
-                + (lang == InGameTranslator.LanguageID.French || lang == InGameTranslator.LanguageID.Spanish
-                    ? 85f
-                    : 50f);
-            float btnWidth = 90f;
-            float btnGap = 6f;
-
-            arenaImportExportLabel = new(menu, this, menu.Translate("Playlist:"),
-                new(leftMargin, topOffset - rowHeight * 8), new(labelWidth, 20f), false);
-            arenaImportExportLabel.label.alignment = FLabelAlignment.Left;
-
-            arenaPlaylistExportButton = new(new Vector2(boxMargin, topOffset - (rowHeight * 8) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Copy"));
-            arenaPlaylistExportButton.OnClick += (_) =>
-            {
-                try
-                {
-                    var arenaMenu = menu as ArenaOnlineLobbyMenu;
-                    string result = EncodePlaylist(arenaMenu?.arenaMainLobbyPage?.levelSelector?.SelectedPlayList);
-                    if (string.IsNullOrEmpty(result))
-                    {
-                        arenaImportExportLabel.text = menu.Translate("Failed");
-                        arenaImportExportLabel.label.color = Color.red;
-                        return;
-                    }
-                    GUIUtility.systemCopyBuffer = result;
-                    arenaImportExportLabel.text = menu.Translate("Copied");
-                    arenaImportExportLabel.label.color = Color.green;
-                }
-                catch (Exception e)
-                {
-                    RainMeadow.Error(e);
-                    arenaImportExportLabel.text = menu.Translate("Failed");
-                    arenaImportExportLabel.label.color = Color.red;
-                }
-            };
-
-            arenaPlaylistImportButton = new(new Vector2(boxMargin + btnWidth + btnGap, topOffset - (rowHeight * 8) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Import"));
-            arenaPlaylistImportButton.OnClick += (_) =>
-            {
-                try
-                {
-                    var arenaMenu = menu as ArenaOnlineLobbyMenu;
-                    ArenaLevelSelector? levelSelector = arenaMenu?.arenaMainLobbyPage?.levelSelector;
-                    string clipboardText = GUIUtility.systemCopyBuffer;
-
-                    if (string.IsNullOrEmpty(clipboardText) || levelSelector == null)
-                    {
-                        arenaImportExportLabel.text = menu.Translate("Failed");
-                        arenaImportExportLabel.label.color = Color.red;
-                        return;
-                    }
-                    List<string> playlist = DecodePlaylist(clipboardText)
-                        .Where(name => !string.IsNullOrWhiteSpace(name))
-                        .ToList();
-
-                    if (playlist.Count == 0 || playlist.Any(name => name.Contains("=") || name.Contains("|")))
-                    {
-                        arenaImportExportLabel.text = menu.Translate("Failed");
-                        arenaImportExportLabel.label.color = Color.red;
-                        return;
-                    }
-
-                    List<string> knownLevels = playlist.Where(levelSelector.allLevels.Contains).ToList();
-                    if (knownLevels.Count == 0)
-                    {
-                        arenaImportExportLabel.text = menu.Translate("Failed");
-                        arenaImportExportLabel.label.color = Color.red;
-                        return;
-                    }
-
-                    levelSelector.LoadNewPlaylist(knownLevels, true);
-                    levelSelector.selectedLevelsPlaylist.ResolvePlaylistMismatch();
-                    menu.PlaySound(SoundID.MENU_Add_Level);
-
-                    bool importedAll = knownLevels.Count == playlist.Count;
-                    arenaImportExportLabel.text = menu.Translate(importedAll ? "Imported" : "Missing levels");
-                    arenaImportExportLabel.label.color = importedAll ? Color.green : Color.yellow;
-                }
-                catch (Exception e)
-                {
-                    RainMeadow.Error(e);
-                    arenaImportExportLabel.text = menu.Translate("Failed import");
-                    arenaImportExportLabel.label.color = Color.red;
-                }
-            };
-
-            arenaSettingsImportExportLabel = new(menu, this, menu.Translate("Settings:"),
-                new(leftMargin, topOffset - rowHeight * 9), new(labelWidth, 20f), false);
-            arenaSettingsImportExportLabel.label.alignment = FLabelAlignment.Left;
-
-            arenaSettingsExportButton = new(new Vector2(boxMargin, topOffset - (rowHeight * 9) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Copy"));
-            arenaSettingsExportButton.OnClick += (_) =>
-            {
-                try
-                {
-                    string result = arena.externalArenaGameMode.ExportLocalSettings(arena);
-                    GUIUtility.systemCopyBuffer = result;
-                    arenaSettingsImportExportLabel.text = menu.Translate("Copied");
-                    arenaSettingsImportExportLabel.label.color = Color.green;
-                }
-                catch (Exception e)
-                {
-                    RainMeadow.Error(e);
-                    arenaSettingsImportExportLabel.text = menu.Translate("Failed");
-                    arenaSettingsImportExportLabel.label.color = Color.red;
-                }
-            };
-
-            arenaSettingsImportButton = new(new Vector2(boxMargin + btnWidth + btnGap, topOffset - (rowHeight * 9) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Import"));
-            arenaSettingsImportButton.OnClick += (_) =>
-            {
-                try
-                {
-                    var arenaMenu = menu as ArenaOnlineLobbyMenu;
-                    string clipboardText = GUIUtility.systemCopyBuffer;
-
-                    if (!string.IsNullOrEmpty(clipboardText))
-                    {
-                        bool success = arena.externalArenaGameMode.ImportLocalSettings(arena, clipboardText);
-                        if (!success)
-                        {
-                            arenaSettingsImportExportLabel.text = menu.Translate("Failed");
-                            arenaSettingsImportExportLabel.label.color = Color.red;
-                            return;
-                        }
-
-                        var settingsInterface = arenaMenu?.arenaMainLobbyPage?.arenaSettingsInterface;
-                        if (settingsInterface != null)
-                        {
-                            settingsInterface.countdownTimerTextBox.valueInt = arena.setupTime;
-                            settingsInterface.CallForSync();
-                        }
-
-                        arenaSettingsImportExportLabel.text = menu.Translate("Imported");
-                        arenaSettingsImportExportLabel.label.color = Color.green;
-                    }
-                }
-                catch (Exception e)
-                {
-                    RainMeadow.Error(e);
-                    arenaSettingsImportExportLabel.text = menu.Translate("Failed");
-                    arenaSettingsImportExportLabel.label.color = Color.red;
-                }
-            };
-
-            this.SafeAddSubobjects(tabWrapper, gameSettings, arenaImportExportLabel, arenaSettingsImportExportLabel);
-
-            new PatchedUIelementWrapper(tabWrapper, arenaPlaylistExportButton);
-            new PatchedUIelementWrapper(tabWrapper, arenaPlaylistImportButton);
-            new PatchedUIelementWrapper(tabWrapper, arenaSettingsImportButton);
-            new PatchedUIelementWrapper(tabWrapper, arenaSettingsExportButton);
+            this.SafeAddSubobjects(tabWrapper, gameSettings);
 
             gameSettings.SelectAndCreateBackButtons(null, false);
         }
@@ -258,40 +95,9 @@ namespace RainMeadow.UI.Components
             base.GrafUpdate(timeStacker);
         }
 
-        public int timeToClearMessage = 120, timeToClearSettingsMessage = 120;
         public override void Update()
         {
             base.Update();
-
-            if (arenaImportExportLabel.text != menu.Translate("Playlist:"))
-            {
-                timeToClearMessage--;
-                if (timeToClearMessage <= 0)
-                {
-                    arenaImportExportLabel.text = menu.Translate("Playlist:");
-                    arenaImportExportLabel.label.color = Color.white;
-                    timeToClearMessage = 120;
-                }
-            }
-            if (arenaPlaylistImportButton != null)
-            {
-                arenaPlaylistImportButton.greyedOut = OwnerSettingsDisabled;
-            }
-
-            if (arenaSettingsImportExportLabel.text != menu.Translate("Settings:"))
-            {
-                timeToClearSettingsMessage--;
-                if (timeToClearSettingsMessage <= 0)
-                {
-                    arenaSettingsImportExportLabel.text = menu.Translate("Settings:");
-                    arenaSettingsImportExportLabel.label.color = Color.white;
-                    timeToClearSettingsMessage = 120;
-                }
-            }
-            if (arenaSettingsImportButton != null)
-            {
-                arenaSettingsImportButton.greyedOut = OwnerSettingsDisabled;
-            }
         }
 
         /// <summary>
