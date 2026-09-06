@@ -2100,9 +2100,12 @@ namespace RainMeadow
                 {
                     if (isStoryMode(out var story))
                     {
+                        if (story.readyForTransition >= StoryGameMode.ReadyForTransition.Opening)
+                        {
+                            story.storyClientData.readyForTransition = true;
+                            return true;
+                        }
                         story.storyClientData.readyForTransition = false;
-                        return story.readyForTransition >= StoryGameMode.ReadyForTransition.Opening;
-
                     }
                     return false;
                 });
@@ -2117,7 +2120,7 @@ namespace RainMeadow
                     if (isStoryMode(out var story))
                     {
                         story.storyClientData.readyForTransition = true;
-
+                        return false;
                     }
                     return true;
 
