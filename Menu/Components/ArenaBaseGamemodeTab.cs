@@ -16,30 +16,8 @@ namespace RainMeadow.UI.Components
     {
         public MenuTabWrapper tabWrapper;
 
-        public MenuLabel foodScoreLabel;
-        public OpTextBox foodScoreTextBox;
+        public GameSettings gameSettings;
 
-        public MenuLabel spearHitScoreLabel;
-        public OpTextBox spearHitScoreTextBox;
-        public MenuLabel killScoreLabel;
-        public OpTextBox killScoreTextBox;
-        public MenuLabel survivalScoreLabel;
-        public OpTextBox survivalScoreTextBox;
-        public MenuLabel denEntryRuleLabel;
-        public OpTextBox denScoreTextBox;
-        public MenuLabel denScoreLabel;
-        public OpComboBox2 denEntryRule;
-
-        public MenuLabel emptyDeathScoreLabel;
-        public OpTextBox emptyDeathScoreTextBox;
-
-        public MenuLabel challengeDenEjectionLabel;
-        public OpCheckBox challengeDenEjectionCheckbox;
-        public EventfulScrollButton? prevButton,
-
-
-            nextButton;
-        public ArenaOnlineGameMode arena => OnlineManager.lobby.gameMode as ArenaOnlineGameMode;
         public MenuLabel arenaImportExportLabel;
         public MenuLabel arenaSettingsImportExportLabel;
 
@@ -48,6 +26,11 @@ namespace RainMeadow.UI.Components
         public OpSimpleButton arenaSettingsExportButton;
         public OpSimpleButton arenaSettingsImportButton;
 
+        public EventfulScrollButton? prevButton,
+
+
+            nextButton;
+        public ArenaOnlineGameMode arena => OnlineManager.lobby.gameMode as ArenaOnlineGameMode;
 
         public bool AllSettingsDisabled =>
             arena.initiateLobbyCountdown && arena.arenaClientSettings.ready;
@@ -64,175 +47,26 @@ namespace RainMeadow.UI.Components
             : base(menu, owner, pos, size)
         {
             tabWrapper = new(menu, this);
+
+            gameSettings = new GameSettings(menu, this);
+
             InGameTranslator.LanguageID? lang = menu?.manager?.rainWorld?.inGameTranslator.currentLanguage;
             float leftMargin = 10f;
             float labelWidth = 140f;
             float topOffset = size.y - 60f;
             float rowHeight = 40f;
-            float boxMargin = leftMargin + labelWidth // The X-position for all boxes
+            float boxMargin = leftMargin + labelWidth
                 + (lang == InGameTranslator.LanguageID.French || lang == InGameTranslator.LanguageID.Spanish
-                    ? 85f // Add more space for some languages
+                    ? 85f
                     : 50f);
-
-
-            foodScoreLabel = new(menu, this, menu.Translate("Food Score:"),
-                new(leftMargin, topOffset), new(labelWidth, 20f), false);
-            foodScoreLabel.label.alignment = FLabelAlignment.Left;
-
-            foodScoreTextBox = new(RainMeadow.rainMeadowOptions.ArenaFoodScore,
-                new(boxMargin, topOffset - 2f), 60)
-            {
-                alignment = FLabelAlignment.Center,
-                description = menu.Translate("Food points multiplier"),
-                accept = OpTextBox.Accept.Int
-            };
-
-            foodScoreTextBox.OnValueUpdate += (config, value, oldValue) =>
-            {
-                if (foodScoreTextBox.valueInt < 0) foodScoreTextBox.valueInt = 0;
-                arena.foodScore = foodScoreTextBox.valueInt;
-            };
-
-
-            spearHitScoreLabel = new(menu, this, menu.Translate("Spear Hit Score:"),
-                new(leftMargin, topOffset - rowHeight), new(labelWidth, 20f), false);
-            spearHitScoreLabel.label.alignment = FLabelAlignment.Left;
-
-            spearHitScoreTextBox = new(RainMeadow.rainMeadowOptions.ArenaSpearHitScore,
-                new(boxMargin, topOffset - rowHeight - 2f), 60)
-            {
-                alignment = FLabelAlignment.Center,
-                description = menu.Translate("Points a spear is worth (non-lethal)"),
-                accept = OpTextBox.Accept.Int
-            };
-
-            spearHitScoreTextBox.OnValueUpdate += (config, value, oldValue) =>
-            {
-                if (spearHitScoreTextBox.valueInt < 0) spearHitScoreTextBox.valueInt = 0;
-                arena.spearHitScore = spearHitScoreTextBox.valueInt;
-            };
-
-            killScoreLabel = new(menu, this, menu.Translate("Kill Score:"),
-                new(leftMargin, topOffset - (rowHeight * 2)), new(labelWidth, 20f), false);
-            killScoreLabel.label.alignment = FLabelAlignment.Left;
-
-            killScoreTextBox = new(RainMeadow.rainMeadowOptions.ArenaKillScore,
-                new(boxMargin, topOffset - (rowHeight * 2) - 2f), 60)
-            {
-                alignment = FLabelAlignment.Center,
-                description = menu.Translate("Points a kill is worth"),
-                accept = OpTextBox.Accept.Int
-            };
-
-            killScoreTextBox.OnValueUpdate += (config, value, oldValue) =>
-            {
-                if (killScoreTextBox.valueInt < 0) killScoreTextBox.valueInt = 0;
-                arena.killScore = killScoreTextBox.valueInt;
-            };
-
-            survivalScoreLabel = new(menu, this, menu.Translate("Survival Score:"),
-                new(leftMargin, topOffset - (rowHeight * 3)), new(labelWidth, 20f), false);
-            survivalScoreLabel.label.alignment = FLabelAlignment.Left;
-
-            survivalScoreTextBox = new(RainMeadow.rainMeadowOptions.ArenaSurvivalScore,
-               new(boxMargin, topOffset - (rowHeight * 3) - 2f), 60)
-            { alignment = FLabelAlignment.Center, description = menu.Translate("Points for surviving inside the shelter"), accept = OpTextBox.Accept.Int };
-
-            survivalScoreTextBox.OnValueUpdate += (config, value, oldValue) =>
-            {
-                if (survivalScoreTextBox.valueInt < 0) survivalScoreTextBox.valueInt = 0;
-                arena.survivalScore = survivalScoreTextBox.valueInt;
-            };
-
-            emptyDeathScoreLabel = new(menu, this, menu.Translate("Empty Death Score:"),
-                new(leftMargin, topOffset - rowHeight * 4), new(labelWidth, 20f), false);
-            emptyDeathScoreLabel.label.alignment = FLabelAlignment.Left;
-
-            emptyDeathScoreTextBox = new(RainMeadow.rainMeadowOptions.ArenaEmptyDeathScore,
-            new(boxMargin, topOffset - (rowHeight * 4)), 60)
-            { alignment = FLabelAlignment.Center, description = menu.Translate("Points lost from self-inflicted death"), accept = OpTextBox.Accept.Int };
-
-            emptyDeathScoreTextBox.OnValueUpdate += (config, value, oldValue) =>
-            {
-                if (emptyDeathScoreTextBox.valueInt < 0) emptyDeathScoreTextBox.valueInt = 0;
-                arena.emptyDeathScore = emptyDeathScoreTextBox.valueInt;
-            };
-
-            denScoreLabel = new(menu, this, menu.Translate("Unlock Dens:"),
-                    new(leftMargin, topOffset - (rowHeight * 5)), new(labelWidth, 20f), false);
-            denScoreLabel.label.alignment = FLabelAlignment.Left;
-
-            denScoreTextBox = new(RainMeadow.rainMeadowOptions.ArenaDenScore,
-                new(boxMargin, topOffset - (rowHeight * 5) - 2f), 60) // FIXED: Added '- (rowHeight * 2)'
-            {
-                alignment = FLabelAlignment.Center,
-                description = menu.Translate("Points required to unlock dens"),
-                accept = OpTextBox.Accept.Int
-            };
-
-            denScoreTextBox.OnValueUpdate += (config, value, oldValue) =>
-                    {
-                        if (denScoreTextBox.valueInt < 0) denScoreTextBox.valueInt = 0;
-                        arena.denScore = denScoreTextBox.valueInt;
-                    };
-
-            denEntryRuleLabel = new(menu, this, menu.Translate("Den Entry:"),
-                new(leftMargin, topOffset - (rowHeight * 6)), new(labelWidth, 20f), false);
-            denEntryRuleLabel.label.alignment = FLabelAlignment.Left;
-
-            var denRuleItems = OpResourceSelector.GetEnumNames(null, typeof(ArenaSetup.GameTypeSetup.DenEntryRule))
-                .Select(li =>
-                {
-                    li.displayName = menu.Translate(li.displayName);
-                    return li;
-                }).ToList();
-
-            denEntryRule = new OpComboBox2(
-                RainMeadow.rainMeadowOptions.ArenaDenType,
-                new(boxMargin, topOffset - (rowHeight * 6) - 2f),
-                110,
-                denRuleItems
-            )
-            {
-                description = menu.Translate("Den entry behavior"),
-            };
-
-            denEntryRule.OnValueChanged += (UIconfig, value, oldValue) =>
-            {
-                arena.denEntryRule = new ArenaSetup.GameTypeSetup.DenEntryRule(value); ;
-            };
-            denEntryRule.Change();
-
-
-
-
-            challengeDenEjectionLabel = new(menu, this, menu.Translate("Den Ejection:"),
-                new(leftMargin, topOffset - rowHeight * 7), new(labelWidth, 20f), false);
-            challengeDenEjectionLabel.label.alignment = FLabelAlignment.Left;
-
-            challengeDenEjectionCheckbox = new(RainMeadow.rainMeadowOptions.ChallengeDenEjection, boxMargin, topOffset - (rowHeight * 7));
-
-            challengeDenEjectionCheckbox.OnValueUpdate += (config, value, oldValue) =>
-            {
-            };
-            challengeDenEjectionCheckbox.OnChange += () =>
-            {
-                challengeDenEjectionCheckbox.description = challengeDenEjectionCheckbox.GetValueBool() ? menu.Translate("Dens eject and block players after some time") : menu.Translate("Normal den behavior");
-                arena.challengeDenEjection = challengeDenEjectionCheckbox.GetValueBool();
-            };
-            challengeDenEjectionCheckbox.Change();
-
-
-            float btnWidth = 90f; // Cut down from 180f
-            float btnGap = 6f;    // Small spacing between Copy and Import
-
+            float btnWidth = 90f;
+            float btnGap = 6f;
 
             arenaImportExportLabel = new(menu, this, menu.Translate("Playlist:"),
                 new(leftMargin, topOffset - rowHeight * 8), new(labelWidth, 20f), false);
             arenaImportExportLabel.label.alignment = FLabelAlignment.Left;
 
-            // Copy Playlist
-            arenaPlaylistExportButton = new(new Vector2(boxMargin, topOffset - (rowHeight * 8) - 2f), new Vector2(btnWidth, 30f), this.menu.Translate("Copy"));
+            arenaPlaylistExportButton = new(new Vector2(boxMargin, topOffset - (rowHeight * 8) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Copy"));
             arenaPlaylistExportButton.OnClick += (_) =>
             {
                 try
@@ -257,14 +91,14 @@ namespace RainMeadow.UI.Components
                 }
             };
 
-            arenaPlaylistImportButton = new(new Vector2(boxMargin + btnWidth + btnGap, topOffset - (rowHeight * 8) - 2f), new Vector2(btnWidth, 30f), this.menu.Translate("Import"));
+            arenaPlaylistImportButton = new(new Vector2(boxMargin + btnWidth + btnGap, topOffset - (rowHeight * 8) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Import"));
             arenaPlaylistImportButton.OnClick += (_) =>
             {
                 try
                 {
                     var arenaMenu = menu as ArenaOnlineLobbyMenu;
                     ArenaLevelSelector? levelSelector = arenaMenu?.arenaMainLobbyPage?.levelSelector;
-                    string clipboardText = UnityEngine.GUIUtility.systemCopyBuffer;
+                    string clipboardText = GUIUtility.systemCopyBuffer;
 
                     if (string.IsNullOrEmpty(clipboardText) || levelSelector == null)
                     {
@@ -283,7 +117,6 @@ namespace RainMeadow.UI.Components
                         return;
                     }
 
-                    // Levels we don't have installed would break the session on start.
                     List<string> knownLevels = playlist.Where(levelSelector.allLevels.Contains).ToList();
                     if (knownLevels.Count == 0)
                     {
@@ -293,7 +126,6 @@ namespace RainMeadow.UI.Components
                     }
 
                     levelSelector.LoadNewPlaylist(knownLevels, true);
-                    // Rebuild the shown items now instead of waiting for the mismatch timer.
                     levelSelector.selectedLevelsPlaylist.ResolvePlaylistMismatch();
                     menu.PlaySound(SoundID.MENU_Add_Level);
 
@@ -309,19 +141,15 @@ namespace RainMeadow.UI.Components
                 }
             };
 
-
-
-            // Copy Settings
             arenaSettingsImportExportLabel = new(menu, this, menu.Translate("Settings:"),
                 new(leftMargin, topOffset - rowHeight * 9), new(labelWidth, 20f), false);
             arenaSettingsImportExportLabel.label.alignment = FLabelAlignment.Left;
 
-            arenaSettingsExportButton = new(new Vector2(boxMargin, topOffset - (rowHeight * 9) - 2f), new Vector2(btnWidth, 30f), this.menu.Translate("Copy"));
+            arenaSettingsExportButton = new(new Vector2(boxMargin, topOffset - (rowHeight * 9) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Copy"));
             arenaSettingsExportButton.OnClick += (_) =>
             {
                 try
                 {
-                    var arenaMenu = menu as ArenaOnlineLobbyMenu;
                     string result = arena.externalArenaGameMode.ExportLocalSettings(arena);
                     GUIUtility.systemCopyBuffer = result;
                     arenaSettingsImportExportLabel.text = menu.Translate("Copied");
@@ -335,14 +163,13 @@ namespace RainMeadow.UI.Components
                 }
             };
 
-            // Import Settings 
-            arenaSettingsImportButton = new(new Vector2(boxMargin + btnWidth + btnGap, topOffset - (rowHeight * 9) - 2f), new Vector2(btnWidth, 30f), this.menu.Translate("Import"));
+            arenaSettingsImportButton = new(new Vector2(boxMargin + btnWidth + btnGap, topOffset - (rowHeight * 9) - 2f), new Vector2(btnWidth, 30f), menu.Translate("Import"));
             arenaSettingsImportButton.OnClick += (_) =>
             {
                 try
                 {
                     var arenaMenu = menu as ArenaOnlineLobbyMenu;
-                    string clipboardText = UnityEngine.GUIUtility.systemCopyBuffer;
+                    string clipboardText = GUIUtility.systemCopyBuffer;
 
                     if (!string.IsNullOrEmpty(clipboardText))
                     {
@@ -373,36 +200,14 @@ namespace RainMeadow.UI.Components
                 }
             };
 
+            this.SafeAddSubobjects(tabWrapper, gameSettings, arenaImportExportLabel, arenaSettingsImportExportLabel);
 
-
-            this.SafeAddSubobjects(
-                tabWrapper,
-                foodScoreLabel,
-                spearHitScoreLabel,
-                killScoreLabel,
-                survivalScoreLabel,
-                denEntryRuleLabel,
-                denScoreLabel,
-                emptyDeathScoreLabel,
-                challengeDenEjectionLabel,
-                arenaImportExportLabel,
-                arenaSettingsImportExportLabel
-            );
-            new PatchedUIelementWrapper(tabWrapper, foodScoreTextBox);
-            new PatchedUIelementWrapper(tabWrapper, spearHitScoreTextBox);
-            new PatchedUIelementWrapper(tabWrapper, killScoreTextBox);
-            new PatchedUIelementWrapper(tabWrapper, denEntryRule);
-            new PatchedUIelementWrapper(tabWrapper, survivalScoreTextBox);
-            new PatchedUIelementWrapper(tabWrapper, denScoreTextBox);
-            new PatchedUIelementWrapper(tabWrapper, emptyDeathScoreTextBox);
-            new PatchedUIelementWrapper(tabWrapper, challengeDenEjectionCheckbox);
             new PatchedUIelementWrapper(tabWrapper, arenaPlaylistExportButton);
             new PatchedUIelementWrapper(tabWrapper, arenaPlaylistImportButton);
             new PatchedUIelementWrapper(tabWrapper, arenaSettingsImportButton);
             new PatchedUIelementWrapper(tabWrapper, arenaSettingsExportButton);
 
-
-
+            gameSettings.SelectAndCreateBackButtons(null, false);
         }
         public void PopulatePage(int offset)
         {
@@ -433,17 +238,8 @@ namespace RainMeadow.UI.Components
         {
             if (!(OnlineManager.lobby?.isOwner == true))
                 return;
-            RainMeadow.rainMeadowOptions.ArenaFoodScore.Value = arena.foodScore;
-            RainMeadow.rainMeadowOptions.ArenaSpearHitScore.Value = arena.spearHitScore;
-            RainMeadow.rainMeadowOptions.ArenaKillScore.Value = arena.killScore;
-            RainMeadow.rainMeadowOptions.ArenaSurvivalScore.Value = arena.survivalScore;
-            RainMeadow.rainMeadowOptions.ArenaDenType.Value = arena.denEntryRule;
-            RainMeadow.rainMeadowOptions.ArenaDenScore.Value = arena.denScore;
-            RainMeadow.rainMeadowOptions.ArenaEmptyDeathScore.Value = arena.emptyDeathScore;
-            RainMeadow.rainMeadowOptions.ChallengeDenEjection.Value = arena.challengeDenEjection;
-
+            gameSettings.SaveInterfaceOptions();
             RainMeadow.rainMeadowOptions.config.Save();
-
         }
 
         public void DeletePageButtons()
@@ -466,88 +262,6 @@ namespace RainMeadow.UI.Components
         public override void Update()
         {
             base.Update();
-            if (foodScoreTextBox != null)
-            {
-                foodScoreTextBox.held = foodScoreTextBox._KeyboardOn;
-                if (!foodScoreTextBox.held)
-                {
-                    foodScoreTextBox.valueInt = arena.foodScore;
-                }
-
-                foodScoreTextBox.greyedOut = OwnerSettingsDisabled;
-            }
-            if (spearHitScoreTextBox != null)
-            {
-                spearHitScoreTextBox.held = spearHitScoreTextBox._KeyboardOn;
-                if (!spearHitScoreTextBox.held)
-                {
-                    if (!ModManager.MSC && arena.spearHitScore > 0) // reset
-                    {
-                        arena.spearHitScore = 0;
-                    }
-                    spearHitScoreTextBox.valueInt = arena.spearHitScore;
-                }
-
-                spearHitScoreTextBox.greyedOut = OwnerSettingsDisabled || !ModManager.MSC;
-            }
-            if (killScoreTextBox != null)
-            {
-                killScoreTextBox.held = killScoreTextBox._KeyboardOn;
-                if (!killScoreTextBox.held)
-                {
-                    killScoreTextBox.valueInt = arena.killScore;
-                }
-
-                killScoreTextBox.greyedOut = OwnerSettingsDisabled;
-            }
-            if (survivalScoreTextBox != null)
-            {
-                survivalScoreTextBox.greyedOut = OwnerSettingsDisabled;
-                survivalScoreTextBox.held = survivalScoreTextBox._KeyboardOn;
-                if (!survivalScoreTextBox.held)
-                {
-                    survivalScoreTextBox.valueInt = arena.survivalScore;
-
-                }
-
-            }
-            if (denEntryRule != null)
-            {
-                denEntryRule.greyedOut = OwnerSettingsDisabled; ;
-                denEntryRule.value = arena.denEntryRule.value;
-            }
-
-            if (denScoreTextBox != null)
-            {
-                denScoreTextBox.held = denScoreTextBox._KeyboardOn;
-                denScoreTextBox.greyedOut = OwnerSettingsDisabled;
-                if (!denScoreTextBox.held)
-                {
-                    denScoreTextBox.valueInt = arena.denScore;
-
-                }
-            }
-
-            if (emptyDeathScoreTextBox != null)
-            {
-                emptyDeathScoreTextBox.greyedOut = OwnerSettingsDisabled;
-                emptyDeathScoreTextBox.held = emptyDeathScoreTextBox._KeyboardOn;
-                if (!emptyDeathScoreTextBox.held)
-                {
-                    emptyDeathScoreTextBox.valueInt = arena.emptyDeathScore;
-
-                }
-
-            }
-
-            if (challengeDenEjectionCheckbox != null)
-            {
-                challengeDenEjectionCheckbox.greyedOut = OwnerSettingsDisabled;
-                if (!challengeDenEjectionCheckbox.held)
-                {
-                    challengeDenEjectionCheckbox.SetValueBool(arena.challengeDenEjection);
-                }
-            }
 
             if (arenaImportExportLabel.text != menu.Translate("Playlist:"))
             {
@@ -556,7 +270,6 @@ namespace RainMeadow.UI.Components
                 {
                     arenaImportExportLabel.text = menu.Translate("Playlist:");
                     arenaImportExportLabel.label.color = Color.white;
-
                     timeToClearMessage = 120;
                 }
             }
@@ -572,7 +285,6 @@ namespace RainMeadow.UI.Components
                 {
                     arenaSettingsImportExportLabel.text = menu.Translate("Settings:");
                     arenaSettingsImportExportLabel.label.color = Color.white;
-
                     timeToClearSettingsMessage = 120;
                 }
             }
