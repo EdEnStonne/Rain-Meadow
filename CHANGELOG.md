@@ -1,5 +1,11 @@
 # Release 1.16.0
 
+## Story
+- Fixed gates starting region transitions before all players are ready and closing the middle door before all players have crossed
+
+## Arena
+- Fixed infinite tinnitus again
+
 ## Chat
 
 ### Modders
