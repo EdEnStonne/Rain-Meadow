@@ -92,7 +92,7 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
         scroller.subObjects.Add(tabWrapper);
     }
 
-    public void AddElement(OnlineSettingElement? el, int index = -1, bool updatePosition = true)
+    public void AddElement(OnlineSettingElement el, int index = -1, bool updatePosition = true)
     {
         if (el is not null)
         {
@@ -107,6 +107,10 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
             if (!scroller.subObjects.Contains(el))
             {
                 scroller.subObjects.Add(el);
+                if (el.owner != scroller)
+                {
+                    RainMeadow.Warn($"Menu Object {el} doesn't not have the scroller as its owner ! Current owner : {el.owner}");
+                }
             }
 
             if (updatePosition)
@@ -117,10 +121,24 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
             el.HardSetPosition(el.WantedPosition);
         }
     }
-    public void AddElements(params OnlineSettingElement?[] els)
+    public void AddElements(params OnlineSettingElement[] els)
     {
         els.Do(el => AddElement(el, -1, false));
         UpdateElementsPosition();
+    }
+    public void AddElementBefore(OnlineSettingElement newEl, OnlineSettingElement? elementBelow, bool updatePosition = true)
+    {
+        if (newEl is not null)
+            AddElement(newEl, elementBelow is null ? default : elements.FindIndex(x => x == elementBelow), updatePosition);
+    }
+    public void AddElementAfter(OnlineSettingElement newEl, OnlineSettingElement? elementAbove, bool updatePosition = true)
+    {
+        if (newEl is not null)
+        {
+            int index = elementAbove is not null ? elements.FindIndex(x => x == elementAbove) : -1;
+            if (index >= 0) index++;
+            AddElement(newEl, index, updatePosition);
+        }
     }
     public void AddBackButton()
     {
