@@ -2,7 +2,7 @@ using Menu;
 using RainMeadow.UI.Components.Configurables;
 
 namespace RainMeadow.UI.Components;
-public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
+public class MSCSlugcatSettings : OnlineArenaSettingsBuilder<MSCSlugcatSettings>
 {
     public const string paincatName = "<PAINCATNAME>";
     public override string Name => "MSC Settings";
@@ -15,6 +15,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Artificer Explosion Capacity",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer,
             MoreSlugcats.MoreSlugcats.cfgArtificerExplosionCapacity,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.artiExplosionCount),
             "How many explosions Artificer can use before cooldown")
         );
@@ -22,6 +23,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Artificer Stun Range Multiplier",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer,
             RainMeadow.rainMeadowOptions.ArtificerStunDistanceMult,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.artiStunDistanceMult),
             "Multiplier on how far Artificer can stun other players compared to vanilla range. Default: 0.5")
         );
@@ -29,6 +31,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Artificer Parry Range Multiplier",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer,
             RainMeadow.rainMeadowOptions.ArtificerParryDistanceMult,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.artiParryDistanceMult),
             "How far Artificer can parry from compared to vanilla range. Default: 0.3")
         );
@@ -36,6 +39,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Artificer Parry Leniency",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer,
             RainMeadow.rainMeadowOptions.ArtificerParryLeniency,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.artiParryLeniency),
             "Gives Artificer more leniency frames in the concussive blast's parry")
         );
@@ -43,6 +47,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Disable Mauling",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Artificer,
             RainMeadow.rainMeadowOptions.BlockMaul,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.disableMaul),
             "Prevent Artificer and <PAINCATNAME> from mauling")
         );
@@ -51,6 +56,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Sain't",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Saint,
             RainMeadow.rainMeadowOptions.ArenaSAINOT,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.sainot),
             "Disable Saint ascendance ability, but allow it to throw spears")
         );
@@ -58,6 +64,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "Saint Ascendance Duration",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Saint,
             RainMeadow.rainMeadowOptions.ArenaSaintAscendanceTimer,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.arenaSaintAscendanceTimer),
             "How long Saint's ascendance ability lasts for. Default: 3s")
         );
@@ -66,6 +73,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "<PAINCATNAME> gets egg at 0 throw skill",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Sofanthiel,
             RainMeadow.rainMeadowOptions.PainCatEgg,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.painCatEgg),
             "If <PAINCATNAME> spawns with 0 throw skill, also spawn with Eggzer0")
         );
@@ -73,6 +81,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "<PAINCATNAME> can always throw spears",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Sofanthiel,
             RainMeadow.rainMeadowOptions.PainCatThrows,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.painCatThrows),
             "Always allow <PAINCATNAME> to throw spears, even if throw skill is 0")
         );
@@ -80,6 +89,7 @@ public class MSCSlugcatSettings : OnlineSlugcatSettings<MSCSlugcatSettings>
             "<PAINCATNAME> sometimes gets a friend",
             MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName.Sofanthiel,
             RainMeadow.rainMeadowOptions.PainCatLizard,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.painCatLizard),
             "Allow <PAINCATNAME> to rarely spawn with a little friend")
         );

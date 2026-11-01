@@ -2,7 +2,7 @@ using Menu;
 using RainMeadow.UI.Components.Configurables;
 
 namespace RainMeadow.UI.Components;
-public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting>
+public class WatcherSlugcatSetting : OnlineArenaSettingsBuilder<WatcherSlugcatSetting>
 {
     public const string WATCHERCAMO = "Camo",
         WATCHERWEAVER = "Weaver",
@@ -41,6 +41,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Watcher Camo Duration",
             WATCHERCAMO,
             RainMeadow.rainMeadowOptions.ArenaWatcherCamoTimer,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.watcherCamoTimer),
             "How long Watcher's abilities last for. Default: 12s")
         );
@@ -48,6 +49,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Watcher Ripple Level",
             WATCHERCAMO,
             RainMeadow.rainMeadowOptions.ArenaWatcherRippleLevel,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.watcherRippleLevel),
             "Updates Watcher's ripple level. Ranges from 1 to 9. Default: 1")
         );
@@ -55,6 +57,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Full Invisibility In Ripple Space",
             WATCHERCAMO,
             RainMeadow.rainMeadowOptions.ArenaWatcherFullInvisibleInRippleSpace,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.fullInvisInRippleSpace),
             "Watcher will leave a faint glow at their position when in ripple space. Other Watchers will also be able to see their eyes.")
         );
@@ -73,6 +76,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Voidkeeper",
             WATCHERVOIDKEEPER,
             RainMeadow.rainMeadowOptions.VoidMaster,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.voidMasterEnabled),
             "Amoeba summoning is disabled lobby-wide")
         );
@@ -80,6 +84,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Voidkeeper Amoeba Duration",
             WATCHERVOIDKEEPER,
             RainMeadow.rainMeadowOptions.AmoebaDuration,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.amoebaDuration),
             "Amoeba duration time in seconds")
         );
@@ -87,6 +92,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Amoeba Lethality Factor",
             WATCHERVOIDKEEPER,
             RainMeadow.rainMeadowOptions.VoidSpawnLethalityFactor,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.voidSpawnLethalityFactor),
             "Multiplier for amoeba lethality")
         );
@@ -94,6 +100,7 @@ public class WatcherSlugcatSetting : OnlineSlugcatSettings<WatcherSlugcatSetting
             "Void's Vengeance",
             WATCHERVOIDKEEPER,
             RainMeadow.rainMeadowOptions.AmoebaControl,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.amoebaControl),
             "Amoebas chase targets at-will")
         );

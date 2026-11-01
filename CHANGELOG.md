@@ -1,3 +1,10 @@
+# Release 1.16.1
+
+## Arena
+### Modders
+- ⚠️ Renamed `OnlineSlugcatSettings` to `OnlineArenaSettingsBuilder`, and `OnlineSlugcatSettingsBase` to `OnlineArenaSettingsBuilderBase`
+- ⚠️ `OnlineSettingConfigurable.SettingsConfigData` requires the parameter `Type attributeOwnerType` now.
+
 # Release 1.16.0
 
 ## Story

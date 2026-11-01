@@ -33,7 +33,7 @@ public abstract class OnlineSettingElement : RectangularMenuObject
     public virtual int additionalPositionsTaken => 0;
 
     public readonly OnlineSettingTab? tab;
-    public OnlineSlugcatSettingsBase? slugcatSettingPage => settingsPage as OnlineSlugcatSettingsBase;
+    public OnlineArenaSettingsBuilderBase? slugcatSettingPage => settingsPage as OnlineArenaSettingsBuilderBase;
     public SettingsPage? settingsPage => owner as SettingsPage ?? owner?.owner?.owner as SettingsPage;
 
     public Vector2 ownerBoxSize = new(390, 430);
@@ -46,7 +46,7 @@ public abstract class OnlineSettingElement : RectangularMenuObject
     {
         this.tab = tab;
 
-        if (slugcatSettingPage is OnlineSlugcatSettingsBase settings)
+        if (slugcatSettingPage is OnlineArenaSettingsBuilderBase settings)
         {
             ownerBoxSize = settings.settingsBoxSize;
             spacing = settings.spacing;

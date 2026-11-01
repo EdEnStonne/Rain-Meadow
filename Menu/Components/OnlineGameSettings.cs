@@ -10,7 +10,7 @@ using static RainMeadow.UI.Components.OnlineSlugcatAbilitiesInterface;
 
 namespace RainMeadow.UI.Components;
 
-public class GameSettings : OnlineSlugcatSettings<GameSettings>
+public class GameSettings : OnlineArenaSettingsBuilder<GameSettings>
 {
     public const string SCORING = "Scoring", DENS = "Dens", IMPORTEXPORT = "Import & Export";
     public override string Name => "Game Settings";
@@ -29,6 +29,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Food Score",
             SCORING,
             RainMeadow.rainMeadowOptions.ArenaFoodScore,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.foodScore),
             "Food points multiplier")
         );
@@ -36,6 +37,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Spear Hit Score",
             SCORING,
             RainMeadow.rainMeadowOptions.ArenaSpearHitScore,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.spearHitScore),
             "Points a spear is worth (non-lethal)")
         );
@@ -43,6 +45,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Kill Score",
             SCORING,
             RainMeadow.rainMeadowOptions.ArenaKillScore,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.killScore),
             "Points a kill is worth")
         );
@@ -50,6 +53,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Survival Score",
             SCORING,
             RainMeadow.rainMeadowOptions.ArenaSurvivalScore,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.survivalScore),
             "Points for surviving inside the shelter")
         );
@@ -57,6 +61,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Empty Death Score",
             SCORING,
             RainMeadow.rainMeadowOptions.ArenaEmptyDeathScore,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.emptyDeathScore),
             "Points lost from self-inflicted death")
         );
@@ -64,6 +69,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Unlock Dens",
             DENS,
             RainMeadow.rainMeadowOptions.ArenaDenScore,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.denScore),
             "Points required to unlock dens")
         );
@@ -71,6 +77,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Den Entry",
             DENS,
             RainMeadow.rainMeadowOptions.ArenaDenType,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.denEntryRule),
             "Den entry behavior")
         );
@@ -78,6 +85,7 @@ public class GameSettings : OnlineSlugcatSettings<GameSettings>
             "Den Ejection",
             DENS,
             RainMeadow.rainMeadowOptions.ChallengeDenEjection,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.challengeDenEjection),
             "Dens eject and block players after some time")
         );

@@ -22,7 +22,7 @@ public class OnlineSettingTab : OnlineSettingElement
 
     public override MenuObject selectable => tabButton;
 
-    public OnlineSettingTab(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsTabData data)
+    public OnlineSettingTab(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsTabData data)
          : this(menu, owner.scroller, data) {}
     public OnlineSettingTab(Menu.Menu menu, MenuObject owner, SettingsTabData data)
          : base(menu, owner, null)

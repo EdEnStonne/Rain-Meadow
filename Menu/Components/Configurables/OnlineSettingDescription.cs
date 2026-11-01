@@ -20,7 +20,7 @@ public class OnlineSettingDescription : OnlineSettingElement, IUpdateWithSlugcat
     public DescButton? descButton;
     public bool folded = false;
 
-    public OnlineSettingDescription(Menu.Menu menu, OnlineSlugcatSettingsBase owner, string description, OnlineSettingElement? parent, OnlineSettingTab? tab = null)
+    public OnlineSettingDescription(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, string description, OnlineSettingElement? parent, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, description, parent, tab) {}
     public OnlineSettingDescription(Menu.Menu menu, MenuObject owner, string description, OnlineSettingElement? parent, OnlineSettingTab? tab = null)
          : base(menu, owner, parent?.tab ?? tab)

@@ -13,7 +13,7 @@ public class OnlineSettingCheckBox : OnlineSettingUIconfig
     public OpCheckBox checkBox => (OpCheckBox)uiConfig;
     public override float BoxSize { get => base.BoxSize; set{} } // no setting the box size
     public string? altDescription;
-    public OnlineSettingCheckBox(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
+    public OnlineSettingCheckBox(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, config, tab) {}
     public OnlineSettingCheckBox(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, OnlineSettingTab? tab = null)
          : base(menu, owner, tabWrapper, config, new OpCheckBox(new Configurable<bool>((bool)config.configurable.BoxedValue), Vector2.zero), tab)

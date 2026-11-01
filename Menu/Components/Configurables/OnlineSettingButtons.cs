@@ -35,7 +35,7 @@ public class OnlineSettingButtons : OnlineSettingElement, IPLEASEUPDATEME
 
     public override MenuObject selectable => buttons[0].wrapper;
 
-    public OnlineSettingButtons(Menu.Menu menu, OnlineSlugcatSettingsBase owner, OnlineSettingTab? tab, string labelText, params ButtonDef[] defs)
+    public OnlineSettingButtons(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, OnlineSettingTab? tab, string labelText, params ButtonDef[] defs)
          : base(menu, owner.scroller, tab)
     {
         tabWrapper = owner.tabWrapper;

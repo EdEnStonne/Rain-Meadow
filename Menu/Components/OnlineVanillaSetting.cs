@@ -3,7 +3,7 @@ using RainMeadow.UI.Components.Configurables;
 
 namespace RainMeadow.UI.Components;
 
-public class VanillaSetting : OnlineSlugcatSettings<VanillaSetting>
+public class VanillaSetting : OnlineArenaSettingsBuilder<VanillaSetting>
 {
     public const string MonkShieldDescription = "When activated, Monk will spawn with a dangle fruit,"
         + OnlineSettingDescription.LINEBREAK + "which can blocks incoming spears."
@@ -18,6 +18,7 @@ public class VanillaSetting : OnlineSlugcatSettings<VanillaSetting>
             "Monk Spawns With Fruit",
             SlugcatStats.Name.Yellow,
             RainMeadow.rainMeadowOptions.ArenaMonkShield,
+            typeof(ArenaOnlineGameMode),
             nameof(ArenaOnlineGameMode.arenaMonkShield),
             "Monk starts each arena round holding a dangle fruit")
         );

@@ -9,7 +9,7 @@ namespace RainMeadow.UI.Components.Configurables;
 public abstract class OnlineSettingTextBoxValue : OnlineSettingUIconfig
 {
     public OpTextBox textBox => (OpTextBox)uiConfig;
-    public OnlineSettingTextBoxValue(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, OpTextBox textBox, OnlineSettingTab? tab = null)
+    public OnlineSettingTextBoxValue(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, OpTextBox textBox, OnlineSettingTab? tab = null)
          : this(menu, owner, owner.tabWrapper, config, textBox, tab) {}
     public OnlineSettingTextBoxValue(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, OpTextBox textBox, OnlineSettingTab? tab = null)
          : base(menu, owner, tabWrapper, config, textBox, tab) {}
@@ -25,7 +25,7 @@ public abstract class OnlineSettingTextBoxValue : OnlineSettingUIconfig
 public class OnlineSettingIntValue : OnlineSettingTextBoxValue
 {
     public int valueInt => textBox.valueInt;
-    public OnlineSettingIntValue(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
+    public OnlineSettingIntValue(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, config, tab) {}
     public OnlineSettingIntValue(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, OnlineSettingTab? tab = null)
          : base(
@@ -46,7 +46,7 @@ public class OnlineSettingFloatValue : OnlineSettingTextBoxValue
     public int? roundoffDecimals;
     public bool needsRoundOff = false;
     public float valueFloat => textBox.valueFloat;
-    public OnlineSettingFloatValue(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
+    public OnlineSettingFloatValue(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, config, tab) {}
     public OnlineSettingFloatValue(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, OnlineSettingTab? tab = null)
          : base(
@@ -95,7 +95,7 @@ public class OnlineSettingFloatValue : OnlineSettingTextBoxValue
 public class OnlineSettingStringValue : OnlineSettingTextBoxValue
 {
     public string valueString => textBox.value;
-    public OnlineSettingStringValue(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
+    public OnlineSettingStringValue(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, config, tab) {}
     public OnlineSettingStringValue(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, OnlineSettingTab? tab = null)
          : base(

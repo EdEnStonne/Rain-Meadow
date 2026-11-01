@@ -11,7 +11,7 @@ using RainMeadow.UI.Systems;
 
 namespace RainMeadow.UI.Components;
 
-public abstract class OnlineSlugcatSettingsBase : SettingsPage
+public abstract class OnlineArenaSettingsBuilderBase : SettingsPage
 {
     public static readonly Vector2 fullSize = new(450, 475);
     public static readonly Vector2 defaultBoxSize = new(450, 440);
@@ -70,7 +70,7 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
         as OnlineSettingConfigurable;
     }
 
-    protected OnlineSlugcatSettingsBase(Menu.Menu menu, MenuObject owner, float spacing = 5f, float margin = 30f, float textSpacing = 300) : base(menu, owner)
+    protected OnlineArenaSettingsBuilderBase(Menu.Menu menu, MenuObject owner, float spacing = 5f, float margin = 30f, float textSpacing = 300) : base(menu, owner)
     {
         offset = fullSize - defaultBoxSize;
         offset.x /= 2f;
@@ -200,7 +200,7 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
         UpdateElementsVisibility();
         UpdateElementsPosition();
     }
-    public void UpdateElementsVisibility()
+    public virtual void UpdateElementsVisibility()
     {
         int visibleElementCount = 0;
         for (int i = 0; i < elements.Count; i++)
@@ -234,7 +234,7 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
             BindSettingsButtons(IsActuallyHidden);
         }
     }
-    public void UpdateElementsPosition()
+    public virtual void UpdateElementsPosition()
     {
         position = 0;
         for (int i = 0; i < elements.Count; i++)
@@ -429,7 +429,7 @@ public abstract class OnlineSlugcatSettingsBase : SettingsPage
         }
     }
 }
-public abstract class OnlineSlugcatSettings<TSelf> : OnlineSlugcatSettingsBase where TSelf : class
+public abstract class OnlineArenaSettingsBuilder<TSelf> : OnlineArenaSettingsBuilderBase where TSelf : OnlineArenaSettingsBuilder<TSelf>
 {
     protected static List<OnlineSettingConfigurable.SettingsConfigData> onlineConfigurables = [];
     protected static List<OnlineSettingTab.SettingsTabData> onlineConfigurableTabs = [];
@@ -531,7 +531,7 @@ public abstract class OnlineSlugcatSettings<TSelf> : OnlineSlugcatSettingsBase w
         return null;
     }
 
-    protected OnlineSlugcatSettings(Menu.Menu menu, MenuObject owner, float spacing = 5f, float margin = 30f, float textSpacing = 300)
+    protected OnlineArenaSettingsBuilder(Menu.Menu menu, MenuObject owner, float spacing = 5f, float margin = 30f, float textSpacing = 300)
          : base(menu, owner, spacing, margin, textSpacing)
     {
         foreach (var tab in onlineConfigurableTabs)

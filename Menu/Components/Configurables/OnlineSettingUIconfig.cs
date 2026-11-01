@@ -16,7 +16,7 @@ public class OnlineSettingUIconfig : OnlineSettingConfigurable
         get => uiConfig.size.x;
         set => uiConfig.size = new Vector2(value, uiConfig.size.y);
     }
-    public OnlineSettingUIconfig(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, UIconfig uiConfig, OnlineSettingTab? tab = null)
+    public OnlineSettingUIconfig(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, UIconfig uiConfig, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, config, uiConfig, tab) {}
     public OnlineSettingUIconfig(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, UIconfig uiConfig, OnlineSettingTab? tab = null)
          : base(menu, owner, tabWrapper, config, tab)

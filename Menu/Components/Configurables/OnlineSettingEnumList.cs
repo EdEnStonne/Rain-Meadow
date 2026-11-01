@@ -36,7 +36,7 @@ public class OnlineSettingEnumList : OnlineSettingUIconfig
         list.Sort((x ,y) => ListItem.GetRealName(x).CompareTo(ListItem.GetRealName(y)));
         return list;
     }
-    public OnlineSettingEnumList(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
+    public OnlineSettingEnumList(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData config, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, config, tab) {}
     public OnlineSettingEnumList(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData config, OnlineSettingTab? tab = null)
          : base(menu,

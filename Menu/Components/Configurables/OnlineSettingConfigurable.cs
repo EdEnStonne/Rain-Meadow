@@ -16,7 +16,7 @@ public abstract class OnlineSettingConfigurable : OnlineSettingElement
     public string DefaultValue => data.configurable.defaultValue;
     public abstract object Value {get;}
 
-    public OnlineSettingConfigurable(Menu.Menu menu, OnlineSlugcatSettingsBase owner, SettingsConfigData data, OnlineSettingTab? tab = null)
+    public OnlineSettingConfigurable(Menu.Menu menu, OnlineArenaSettingsBuilderBase owner, SettingsConfigData data, OnlineSettingTab? tab = null)
          : this(menu, owner.scroller, owner.tabWrapper, data, tab) {}
     public OnlineSettingConfigurable(Menu.Menu menu, MenuObject owner, MenuTabWrapper tabWrapper, SettingsConfigData data, OnlineSettingTab? tab = null)
          : base(menu, owner, tab)
@@ -117,30 +117,21 @@ public abstract class OnlineSettingConfigurable : OnlineSettingElement
             }
             else
             {
-                RainMeadow.Error($"Type {attributeOwnerType.Name} does not have a Get function ! Please add a Get function with SettingsConfigData.AddNewGetAttributeOwnerFunction.");
+                RainMeadow.Error($"Type {attributeOwnerType.Name} does not have a Get function ! Please add a Get function with SettingsConfigData.AddNewGetAttributeOwnerFunction().");
                 RainMeadow.Error($"This SettingsConfigData of {attributeOwnerType.Name}.{arenaOnlineAttributeName} won't save the attribute !");
                 getAttributeOwner = null;
             }
         }
-        public SettingsConfigData(string name, ConfigurableBase configurable, string arenaOnlineAttributeName, string description = "", bool isClient = false)
-            : this(name, configurable, typeof(ArenaOnlineGameMode), arenaOnlineAttributeName, description, isClient) {}
-
-
         public SettingsConfigData(string name, SlugcatStats.Name slugcat, ConfigurableBase configurable, Type attributeOwnerType, string arenaOnlineAttributeName, string description = "", bool isClient = false)
             : this(name, configurable, attributeOwnerType, arenaOnlineAttributeName, description, isClient)
         {
             slugcatTab = slugcat;
         }
-        public SettingsConfigData(string name, SlugcatStats.Name slugcat, ConfigurableBase configurable, string arenaOnlineAttributeName, string description = "", bool isClient = false)
-            : this(name, slugcat, configurable, typeof(ArenaOnlineGameMode), arenaOnlineAttributeName, description, isClient) {}
-
         public SettingsConfigData(string name, string tabName, ConfigurableBase configurable, Type attributeOwnerType, string arenaOnlineAttributeName, string description = "", bool isClient = false)
             : this(name, configurable, attributeOwnerType, arenaOnlineAttributeName, description, isClient)
         {
             this.tabName = tabName;
         }
-        public SettingsConfigData(string name, string tabName, ConfigurableBase configurable, string arenaOnlineAttributeName, string description = "", bool isClient = false)
-            : this(name, tabName, configurable, typeof(ArenaOnlineGameMode), arenaOnlineAttributeName, description, isClient) {}
 
         public readonly object? AttributeValue
         {
@@ -181,12 +172,12 @@ public abstract class OnlineSettingConfigurable : OnlineSettingElement
                     }
                     catch (Exception ex)
                     {
-                        RainMeadow.Error($"Could not convert {value} into {attributeOwnerType.GetField(attributeName)?.FieldType} : {attributeOwnerType.Name}.{attributeOwnerType.GetField(attributeName)?.Name} \n" + ex);
+                        RainMeadow.Error($"Could not convert {value} into {attributeOwnerType?.GetField(attributeName)?.FieldType} : {attributeOwnerType?.Name}.{attributeOwnerType?.GetField(attributeName)?.Name} \n" + ex);
                     }
                 }
             }
         }
-        public readonly Type AttributeType => configurable.settingType;
+        public readonly Type AttributeType => configurable?.settingType!;
 
         public static bool operator== (SettingsConfigData left, SettingsConfigData right)
         {
