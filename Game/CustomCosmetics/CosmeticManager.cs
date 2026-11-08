@@ -138,7 +138,7 @@ namespace RainMeadow
             public bool UsesFadeColor => true;
             public GradientCapeColor() { }
 
-            protected abstract Color GetFadeColor(Color baseColor);
+            public abstract Color GetFadeColor(Color baseColor);
             public virtual void ApplyColor(TriangleMesh mesh, int vertex, RoomCamera rCam, Color customColor, float fade = 0)
             {
                 mesh.verticeColors[vertex] = customColor;
@@ -155,7 +155,7 @@ namespace RainMeadow
 
         public class FadeGradientCapeColor() : GradientCapeColor
         {
-            protected override Color GetFadeColor(Color baseColor)
+            public override Color GetFadeColor(Color baseColor)
             {
                 HSLColor baseColorHSL = baseColor.ToHSL();
                 if (baseColorHSL.saturation < 0.5f) // fade to saturated color if desaturated

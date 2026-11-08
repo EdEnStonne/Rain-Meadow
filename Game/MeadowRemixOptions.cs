@@ -459,6 +459,8 @@ public class RainMeadowOptions : OptionInterface
             // General Tab
             OpComboBox2 introroll;
             OpColorPicker cosmeticColor;
+            OpRect cosmeticColorPreview;
+            OpRect cosmeticColorFadePreview;
             OpComboBox2 currentlyActiveCosmeticbox;
             OpComboBox2 currentlyActiveCosmeticSkinbox;
             OpCheckBox rainbowCape;
@@ -505,8 +507,10 @@ public class RainMeadowOptions : OptionInterface
                 new OpLabel(210f, 190f, Translate("Cosmetic Skin")),
                 currentlyActiveCosmeticbox = new OpComboBox2(currentlyActiveCosmetic, new Vector2(10f, 160f), 160f, CosmeticItemList()) { colorEdge = Menu.MenuColorEffect.rgbWhite },
                 currentlyActiveCosmeticSkinbox = new OpComboBox2(currentlyActiveCosmeticSkin, new Vector2(210f, 160f), 160f, CosmeticSkinItemList()) { colorEdge = Menu.MenuColorEffect.rgbWhite },
+                
                 new OpLabel(410f, 250f, Translate("Cosmetic Color")),
-
+                cosmeticColorPreview = new OpRect(new Vector2(570f, 90f), new Vector2(24f, 24f), 1f),
+                cosmeticColorFadePreview = new OpRect(new Vector2(570f, 120f), new Vector2(24f, 24f), 0f),
                 cosmeticColor = new OpColorPicker(currentlyActiveCustomCosmeticColor, new Vector2(410f, 90f)),
 
                 new OpLabel(10f, 50f, Translate("Log Level")),
@@ -549,8 +553,68 @@ public class RainMeadowOptions : OptionInterface
             };
             currentlyActiveCosmeticbox.OnChanged += () =>
             {
-                currentlyActiveCosmeticSkinbox.bumpBehav.greyedOut = currentlyActiveCosmeticbox.value != "none";
-                cosmeticColor.bumpBehav.greyedOut = currentlyActiveCosmeticbox.value != "none";
+                bool noCosmetics = currentlyActiveCosmeticbox.value == "none";
+                currentlyActiveCosmeticSkinbox.bumpBehav.greyedOut = noCosmetics;
+                cosmeticColor.bumpBehav.greyedOut = noCosmetics;
+                cosmeticColorPreview.fillAlpha = noCosmetics ? 0 : 1;
+                cosmeticColorFadePreview.fillAlpha = noCosmetics ? 0 : 1;
+            };
+            currentlyActiveCosmeticSkinbox.OnChanged += () =>
+            {
+                if (currentlyActiveCosmeticbox.value != "none"
+                    && CosmeticManager.ParseCosmeticSkin(currentlyActiveCosmeticSkinbox.value.ToString()) 
+                        is CosmeticManager.ICosmeticSkin skin)
+                {
+                    cosmeticColorPreview.fillAlpha = skin.UsesCustomColor ? 1 : 0;
+                    cosmeticColorPreview.rect.container.alpha = skin.UsesCustomColor ? 1 : 0.25f;
+                    cosmeticColorFadePreview.fillAlpha = skin.UsesFadeColor ? 1 : 0;
+                    cosmeticColorFadePreview.rect.container.alpha = skin.UsesFadeColor ? 1 : 0.25f;
+                }
+                else
+                {
+                    cosmeticColorPreview.fillAlpha = 0;
+                    cosmeticColorPreview.rect.container.alpha = 0f;
+                    cosmeticColorFadePreview.fillAlpha = 0;
+                    cosmeticColorFadePreview.rect.container.alpha = 0f;
+                }
+            };
+            cosmeticColor.OnChange += () =>
+            {
+                if (currentlyActiveCosmeticbox.value != "none"
+                    && CosmeticManager.ParseCosmeticSkin(currentlyActiveCosmeticSkinbox.value.ToString()) 
+                        is CosmeticManager.ICosmeticSkin skin)
+                {
+                    if (skin.UsesCustomColor)
+                    {
+                        cosmeticColorPreview.colorFill = currentlyActiveCustomCosmeticColor.Value;
+                        cosmeticColorPreview.fillAlpha = 1;
+                        cosmeticColorPreview.rect.container.alpha = 1f;
+                    }
+                    else
+                    {
+                        cosmeticColorPreview.fillAlpha = 0;
+                        cosmeticColorPreview.rect.container.alpha = 0.25f;
+                    }
+        
+                    if (skin.UsesFadeColor && skin is CosmeticManager.GradientCapeColor gradient)
+                    {
+                        cosmeticColorFadePreview.colorFill = gradient.GetFadeColor(currentlyActiveCustomCosmeticColor.Value);
+                        cosmeticColorFadePreview.fillAlpha = 1;
+                        cosmeticColorFadePreview.rect.container.alpha = 1f;
+                    }
+                    else
+                    {
+                        cosmeticColorFadePreview.fillAlpha = 0;
+                        cosmeticColorFadePreview.rect.container.alpha = 0.25f;
+                    }
+                }
+                else
+                {
+                    cosmeticColorPreview.fillAlpha = 0;
+                    cosmeticColorPreview.rect.container.alpha = 0f;
+                    cosmeticColorFadePreview.fillAlpha = 0;
+                    cosmeticColorFadePreview.rect.container.alpha = 0f;
+                }
             };
 
             downpourWarning.Hidden = true;
